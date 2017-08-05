@@ -7,42 +7,42 @@ import csv
 
 
 def test2():
-    worksheet_list = study.get_worksheet_list('15RsrnLlocEQhGd-m27nXL8CuJcTwIs3rG8mO1VGx6Gs')
+    # worksheet_list = study.get_worksheet_list('15RsrnLlocEQhGd-m27nXL8CuJcTwIs3rG8mO1VGx6Gs')
     c = CaboCha.Parser()
-    doc_list = []
-
-    # 前処理
-    for worksheet in worksheet_list:
-        records = worksheet.get_all_values()
-        del records[0]
-        del records[0]
-        del records[len(records) - 2]
-
-        for i, record in enumerate(records):
-            if i in range(0, 3):
-                del record[0]
-                del record[0]
-            else:
-                del record[0]
-
-            record = [x for x in record if x is not '']
-
-            for cell in record:
-                for doc in cell.splitlines():
-                    for one_sentence in re.split('[。.．]', doc):
-                        c_tree = c.parse(one_sentence)
-                        xml_root = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
-
-                        if len(one_sentence) != 0 and len(xml_root.findall(".//chunk")) != 1:
-                            doc_list.append(one_sentence)
-
-
-    # ファイル書き込み
-    with open("前期.csv", "w") as f:
-        writer = csv.writer(f)
-
-        for data_row in doc_list:
-            writer.writerow([data_row])
+    # doc_list = []
+    #
+    # # 前処理
+    # for worksheet in worksheet_list:
+    #     records = worksheet.get_all_values()
+    #     del records[0]
+    #     del records[0]
+    #     del records[len(records) - 2]
+    #
+    #     for i, record in enumerate(records):
+    #         if i in range(0, 3):
+    #             del record[0]
+    #             del record[0]
+    #         else:
+    #             del record[0]
+    #
+    #         record = [x for x in record if x is not '']
+    #
+    #         for cell in record:
+    #             for doc in cell.splitlines():
+    #                 for one_sentence in re.split('[。.．]', doc):
+    #                     c_tree = c.parse(one_sentence)
+    #                     xml_root = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
+    #
+    #                     if len(one_sentence) != 0 and len(xml_root.findall(".//chunk")) != 1:
+    #                         doc_list.append(one_sentence)
+    #
+    #
+    # # ファイル書き込み
+    # with open("前期.csv", "w") as f:
+    #     writer = csv.writer(f)
+    #
+    #     for data_row in doc_list:
+    #         writer.writerow([data_row])
 
     # csv読み込み
     f = open('前期.csv')
@@ -86,19 +86,26 @@ def test2():
         else:
             last_tok_dict[last_tok] = 1
 
-    print(sorted(last_tok_dict.items(), key=lambda x: x[1], reverse=True))
-
+    # print(sorted(last_tok_dict.items(), key=lambda x: x[1], reverse=True))
+    # print(all_count)
     # TODO
-
-    exit(-1)
+    stop = 0
     for hoge in sorted(last_tok_dict.items(), key=lambda x: x[1], reverse=True):
         c_tree = c.parse(hoge[0])
         xml_root = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
 
         # if len(xml_root.findall(".//chunk")) != 1:
-        # tagger = MeCab.Tagger("-Owakati")
-        # result = tagger.parse(hoge[0])
-        print(c_tree.toString(CaboCha.FORMAT_XML), hoge)
+        tagger = MeCab.Tagger("-Owakati")
+        result = tagger.parse(hoge[0])
+        # if hoge[0].find('でき') != -1:
+        print(hoge)
+        print(result)
+        print(c_tree.toString(CaboCha.FORMAT_XML))
+
+        if stop == 5:
+            break
+        stop += 1
+
 
         # print(xml_root.findall(".//chunk"), hoge)
         # print(c_tree.toString(CaboCha.FORMAT_TREE), hoge)
