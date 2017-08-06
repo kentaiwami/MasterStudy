@@ -38,11 +38,40 @@ def create_data():
 
     json.dump(out_put_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
     f.close()
-    print(out_put_dict)
 
 
-def get_end_of_sentence(doc_list):
-    pass
+def get_end_of_sentence(dict_data):
+    c = CaboCha.Parser()
+    end_of_sentence_dict = {}
+
+    for student_number in dict_data.keys():
+
+        student_last_tok_dict = {}
+
+        for day in dict_data[student_number].keys():
+
+            one_day_last_tok_list = []
+
+            for sentence in dict_data[student_number][day]:
+                c_tree = c.parse(sentence)
+                c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
+                end_chunk = c_xml.findall(".//chunk[@link='-1']")
+
+                if len(c_xml.findall(".//chunk")) == 0:
+                    continue
+
+                tok_list = end_chunk[0].findall(".//tok")
+                last_tok = ''
+                for tok in tok_list:
+                    last_tok += tok.text
+
+                one_day_last_tok_list.append(last_tok)
+
+            student_last_tok_dict[day] = one_day_last_tok_list
+
+        end_of_sentence_dict[student_number] = student_last_tok_dict
+
+    return end_of_sentence_dict
 
 
 if __name__ == '__main__':
@@ -51,3 +80,5 @@ if __name__ == '__main__':
     # データ読み込み
     f = open("前期.json")
     data = json.load(f)
+
+    end_of_sentence_dict = get_end_of_sentence(data)
