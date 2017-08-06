@@ -68,7 +68,7 @@ def get_end_of_sentence(dict_data):
                 for tok in tok_list:
                     feature_list = tok.attrib['feature'].split(',')
 
-                    if len(feature_list[6]) != 1:
+                    if len(feature_list[6]) != 1 and feature_list[0] != '名詞':
                         one_day_last_tok_origin_list.append(feature_list[6])
 
                     last_tok += tok.text
