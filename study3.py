@@ -4,7 +4,7 @@ import CaboCha
 from xml.etree import ElementTree
 import re
 import json
-
+import csv
 
 def create_data():
     worksheet_list = study.get_worksheet_list('15RsrnLlocEQhGd-m27nXL8CuJcTwIs3rG8mO1VGx6Gs')
@@ -43,14 +43,17 @@ def create_data():
 def get_end_of_sentence(dict_data):
     c = CaboCha.Parser()
     end_of_sentence_dict = {}
+    end_of_sentence_origin_dict = {}
 
     for student_number in dict_data.keys():
 
         student_last_tok_dict = {}
+        student_last_tok_origin_dict = {}
 
         for day in dict_data[student_number].keys():
 
             one_day_last_tok_list = []
+            one_day_last_tok_origin_list = []
 
             for sentence in dict_data[student_number][day]:
                 c_tree = c.parse(sentence)
@@ -63,13 +66,20 @@ def get_end_of_sentence(dict_data):
                 tok_list = end_chunk[0].findall(".//tok")
                 last_tok = ''
                 for tok in tok_list:
+                    feature_list = tok.attrib['feature'].split(',')
+
+                    if len(feature_list[6]) != 1:
+                        one_day_last_tok_origin_list.append(feature_list[6])
+
                     last_tok += tok.text
 
                 one_day_last_tok_list.append(last_tok)
 
             student_last_tok_dict[day] = one_day_last_tok_list
+            student_last_tok_origin_dict[day] = one_day_last_tok_origin_list
 
         end_of_sentence_dict[student_number] = student_last_tok_dict
+        end_of_sentence_origin_dict[student_number] =student_last_tok_origin_dict
 
     return end_of_sentence_dict
 
