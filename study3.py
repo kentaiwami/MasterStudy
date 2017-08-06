@@ -43,19 +43,18 @@ def create_data():
 def get_end_of_sentence(dict_data):
     c = CaboCha.Parser()
     end_of_sentence_dict = {}
-    end_of_sentence_origin_dict = {}
 
     for student_number in dict_data.keys():
 
-        student_last_tok_dict = {}
-        student_last_tok_origin_dict = {}
+        student_dict = {}
 
         for day in dict_data[student_number].keys():
 
-            one_day_last_tok_list = []
-            one_day_last_tok_origin_list = []
+            sentence_list = []
 
             for sentence in dict_data[student_number][day]:
+                one_day_last_tok_origin_list = []
+
                 c_tree = c.parse(sentence)
                 c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
                 end_chunk = c_xml.findall(".//chunk[@link='-1']")
@@ -73,13 +72,11 @@ def get_end_of_sentence(dict_data):
 
                     last_tok += tok.text
 
-                one_day_last_tok_list.append(last_tok)
+                sentence_list.append({'sentence': sentence, 'end_of_sentence': last_tok, 'original_pattern': one_day_last_tok_origin_list})
 
-            student_last_tok_dict[day] = one_day_last_tok_list
-            student_last_tok_origin_dict[day] = one_day_last_tok_origin_list
+            student_dict[day] = sentence_list
 
-        end_of_sentence_dict[student_number] = student_last_tok_dict
-        end_of_sentence_origin_dict[student_number] =student_last_tok_origin_dict
+        end_of_sentence_dict[student_number] = student_dict
 
     return end_of_sentence_dict
 
