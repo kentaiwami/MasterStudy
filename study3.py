@@ -3,8 +3,8 @@ import MeCab
 import CaboCha
 from xml.etree import ElementTree
 import re
-import csv
 import json
+
 
 def create_data():
     worksheet_list = study.get_worksheet_list('15RsrnLlocEQhGd-m27nXL8CuJcTwIs3rG8mO1VGx6Gs')
@@ -41,20 +41,13 @@ def create_data():
     print(out_put_dict)
 
 
-def init_data():
-    f = open('前期.csv')
-    lines2 = f.readlines()
-    f.close()
-
-    return lines2
-
-
 def get_end_of_sentence(doc_list):
     pass
 
 
 if __name__ == '__main__':
-    create_data()
-    # doc_list = init_data()
+    # create_data()
 
-    # print(len(doc_list))
+    # データ読み込み
+    f = open("前期.json")
+    data = json.load(f)
