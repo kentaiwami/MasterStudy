@@ -41,7 +41,7 @@ def create_data():
 
 
 def get_end_of_sentence(dict_data):
-    c = CaboCha.Parser()
+    c = CaboCha.Parser("-u original.dic")
     end_of_sentence_dict = {}
 
     for student_number in dict_data.keys():
@@ -54,16 +54,23 @@ def get_end_of_sentence(dict_data):
 
             for sentence in dict_data[student_number][day]:
                 one_day_last_tok_origin_list = []
+                noun_list = []
 
                 c_tree = c.parse(sentence)
                 c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
                 end_chunk = c_xml.findall(".//chunk[@link='-1']")
+
+                for chunk in c_xml.findall(".//chunk"):
+                    for tok in chunk.findall(".//tok"):
+                        if tok.attrib['feature'].split(',')[0] == '名詞':
+                            noun_list.append(tok.text)
 
                 if len(c_xml.findall(".//chunk")) == 0:
                     continue
 
                 tok_list = end_chunk[0].findall(".//tok")
                 last_tok = ''
+
                 for tok in tok_list:
                     feature_list = tok.attrib['feature'].split(',')
 
@@ -72,12 +79,18 @@ def get_end_of_sentence(dict_data):
 
                     last_tok += tok.text
 
-                sentence_list.append({'sentence': sentence, 'end_of_sentence': last_tok, 'original_pattern': one_day_last_tok_origin_list})
+                sentence_list.append({'sentence': sentence,
+                                      'end_of_sentence': last_tok,
+                                      'original_pattern': one_day_last_tok_origin_list,
+                                      'noun': noun_list})
 
             student_dict[day] = sentence_list
 
         end_of_sentence_dict[student_number] = student_dict
 
+    f = open('test.json', 'w')
+    json.dump(end_of_sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
+    f.close()
     return end_of_sentence_dict
 
 
