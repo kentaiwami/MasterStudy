@@ -30,16 +30,19 @@ def create_data():
             k = worksheet.cell(3, col).value
             p = worksheet.cell(4, col).value
             t = worksheet.cell(5, col).value
-            a = worksheet.cell(7, col).value
+            o = worksheet.cell(7, col).value
 
-            cell_doc_list = []
-            for cell_doc in [k, p, t, a]:
-                cell_doc_list += re.split('[。.．]', cell_doc)
+            format_dict = {}
 
-            cell_doc_list = [x.replace('\n', '') for x in cell_doc_list]
-            cell_doc_list = [x for x in cell_doc_list if x is not '']
+            for cell_doc, format_id in zip([k, p, t, o], ['K', 'P', 'T', 'O']):
+                cell_doc_list = re.split('[。.．\n]', cell_doc)
 
-            one_day_dict[day] = cell_doc_list
+                cell_doc_list = [x.replace('\n', '') for x in cell_doc_list]
+                cell_doc_list = [x for x in cell_doc_list if x is not '']
+
+                format_dict[format_id] = cell_doc_list
+
+            one_day_dict[day] = format_dict
 
         out_put_dict[worksheet.title] = one_day_dict
 
@@ -52,49 +55,56 @@ def search_all_sentence(dict_data):
     c = CaboCha.Parser("-u original.dic")
     sentence_dict = {}
 
+    # 学生のループ
     for student_number in dict_data.keys():
 
         student_dict = {}
 
+        # 日付のループ
         for day in dict_data[student_number].keys():
 
-            sentence_list = []
+            # KPTOのループ
+            kpto = {}
+            for format_id in dict_data[student_number][day].keys():
 
-            for sentence in dict_data[student_number][day]:
-                # TEST
-                # sentence = test_sentence
+                sentence_list = []
 
-                c_tree = c.parse(sentence)
-                c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
-                end_chunk = c_xml.find(".//chunk[@link='-1']")
+                for sentence in dict_data[student_number][day][format_id]:
+                    # TEST
+                    # sentence = test_sentence
 
-                if len(c_xml.findall(".//chunk")) == 0:
-                    continue
+                    c_tree = c.parse(sentence)
+                    c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
+                    end_chunk = c_xml.find(".//chunk[@link='-1']")
 
-                # print(c_tree.toString(CaboCha.FORMAT_XML))
-                # 文末からの係り受け抽出
-                last_chunk_relation_sentence = search_end_chunk_relation(c_xml, end_chunk)
-                print(last_chunk_relation_sentence)
+                    if len(c_xml.findall(".//chunk")) == 0:
+                        continue
 
-                # 名詞句の取り出し
-                noun_list = get_noun(c_xml)
+                    # print(c_tree.toString(CaboCha.FORMAT_XML))
+                    # 文末からの係り受け抽出
+                    # last_chunk_relation_sentence = search_end_chunk_relation(c_xml, end_chunk)
+                    # print(last_chunk_relation_sentence)
 
-                # 文末の抽出
-                last_tok, one_day_last_tok_origin_list, end_of_sentence_all_dict = get_end_of_sentence(end_chunk, end_of_sentence_all_dict)
+                    # 名詞句の取り出し
+                    noun_list = get_noun(c_xml)
 
-                sentence_list.append({'sentence': sentence,
-                                      'end_of_sentence': last_tok,
-                                      'original_pattern': one_day_last_tok_origin_list,
-                                      'noun': noun_list})
-                # print(sentence_list)
-                # exit(-1)
+                    # 文末の抽出
+                    last_tok, one_day_last_tok_origin_list, end_of_sentence_all_dict = get_end_of_sentence(end_chunk, end_of_sentence_all_dict)
 
-            student_dict[day] = sentence_list
+                    sentence_list.append({'sentence': sentence,
+                                          'end_of_sentence': last_tok,
+                                          'original_pattern': one_day_last_tok_origin_list,
+                                          'noun': noun_list})
+                    # print(sentence_list)
+                    # exit(-1)
+                kpto[format_id] = sentence_list
+
+            student_dict[day] = kpto
 
         sentence_dict[student_number] = student_dict
 
-    # f = open('output_data.json', 'w')
-    # json.dump(end_of_sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
+    # f = open('output_data2.json', 'w')
+    # json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
     # f.close()
     # print(sorted(end_of_sentence_all_dict.items(), key=lambda x: x[1], reverse=True))
     return sentence_dict
@@ -235,11 +245,11 @@ def td_idf(dict_data):
 
 
 if __name__ == '__main__':
-    create_data()
+    # create_data()
 
     # データ読み込み
-    # f = open("前期.json")
-    # data = json.load(f)
+    f = open("前期2.json")
+    data = json.load(f)
 
     # td_idf(data)
-    # end_of_sentence_dict = search_all_sentence(data)
+    end_of_sentence_dict = search_all_sentence(data)
