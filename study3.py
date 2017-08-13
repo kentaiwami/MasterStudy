@@ -8,15 +8,15 @@ import csv
 import math
 
 
-test_sentence = '・以前、Trelloで行おうと決めてからずっと放置してしまっていたタスク管理について、ようやく着手することができた'
-# test_sentence = '・上田さん土手さん創生会議の関係性を知ることができた'
+test_sentence = '以前、Trelloで行おうと決めてからずっと放置してしまっていたタスク管理について、ようやく着手することができた'
+# test_sentence = '上田さん土手さん創生会議の関係性を知ることができた'
 # test_sentence = '少しだらだらと長引きすぎた'
 
 
 def create_data():
     worksheet_list = study.get_worksheet_list('15RsrnLlocEQhGd-m27nXL8CuJcTwIs3rG8mO1VGx6Gs')
 
-    f = open("前期.json", "w")
+    f = open("前期2.json", "w")
 
     out_put_dict = {}
 
@@ -62,7 +62,7 @@ def search_all_sentence(dict_data):
 
             for sentence in dict_data[student_number][day]:
                 # TEST
-                sentence = test_sentence
+                # sentence = test_sentence
 
                 c_tree = c.parse(sentence)
                 c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
@@ -71,7 +71,7 @@ def search_all_sentence(dict_data):
                 if len(c_xml.findall(".//chunk")) == 0:
                     continue
 
-                print(c_tree.toString(CaboCha.FORMAT_XML))
+                # print(c_tree.toString(CaboCha.FORMAT_XML))
                 # 文末からの係り受け抽出
                 last_chunk_relation_sentence = search_end_chunk_relation(c_xml, end_chunk)
                 print(last_chunk_relation_sentence)
@@ -86,8 +86,8 @@ def search_all_sentence(dict_data):
                                       'end_of_sentence': last_tok,
                                       'original_pattern': one_day_last_tok_origin_list,
                                       'noun': noun_list})
-                print(sentence_list)
-                exit(-1)
+                # print(sentence_list)
+                # exit(-1)
 
             student_dict[day] = sentence_list
 
@@ -235,11 +235,11 @@ def td_idf(dict_data):
 
 
 if __name__ == '__main__':
-    # create_data()
+    create_data()
 
     # データ読み込み
-    f = open("前期.json")
-    data = json.load(f)
+    # f = open("前期.json")
+    # data = json.load(f)
 
-    td_idf(data)
-    end_of_sentence_dict = search_all_sentence(data)
+    # td_idf(data)
+    # end_of_sentence_dict = search_all_sentence(data)
