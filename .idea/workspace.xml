@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98df844d-20dc-4c91-931b-f8eef99a795b" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/original.dic" afterPath="$PROJECT_DIR$/original.dic" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/original.csv" afterPath="$PROJECT_DIR$/original.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_data2.json" afterPath="$PROJECT_DIR$/output_data2.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/study3.py" afterPath="$PROJECT_DIR$/study3.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,14 +22,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="study3.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="study3.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/study3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1548">
-              <caret line="244" column="0" lean-forward="true" selection-start-line="244" selection-start-column="0" selection-end-line="244" selection-end-column="0" />
+            <state relative-caret-position="440">
+              <caret line="108" column="13" lean-forward="true" selection-start-line="108" selection-start-column="13" selection-end-line="108" selection-end-column="13" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
-                <element signature="e#5058#7312#0" expanded="false" />
+                <element signature="e#5052#7306#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -35,28 +38,18 @@
       <file leaf-file-name="output_data2.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/output_data2.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-822">
-              <caret line="33996" column="9" lean-forward="true" selection-start-line="33996" selection-start-column="9" selection-end-line="33996" selection-end-column="9" />
+            <state relative-caret-position="370">
+              <caret line="32821" column="12" lean-forward="true" selection-start-line="32821" selection-start-column="12" selection-end-line="32821" selection-end-column="12" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="output_data.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/output_data.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="7" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="前期2.json" pinned="false" current-in-tab="false">
+      <file leaf-file-name="前期2.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/前期2.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="14" lean-forward="true" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="14" />
+            <state relative-caret-position="270">
+              <caret line="18" column="8" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -65,8 +58,8 @@
       <file leaf-file-name="original.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/original.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="31" column="44" lean-forward="false" selection-start-line="31" selection-start-column="44" selection-end-line="31" selection-end-column="44" />
+            <state relative-caret-position="480">
+              <caret line="32" column="51" lean-forward="false" selection-start-line="32" selection-start-column="51" selection-end-line="32" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -137,10 +130,10 @@
         <option value="$PROJECT_DIR$/前期.csv" />
         <option value="$PROJECT_DIR$/前期2.csv" />
         <option value="$PROJECT_DIR$/test.json" />
-        <option value="$PROJECT_DIR$/original.csv" />
         <option value="$PROJECT_DIR$/前期.json" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/前期2.json" />
+        <option value="$PROJECT_DIR$/original.csv" />
         <option value="$PROJECT_DIR$/study3.py" />
       </list>
     </option>
@@ -772,14 +765,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/original.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="31" column="44" lean-forward="false" selection-start-line="31" selection-start-column="44" selection-end-line="31" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="284">
@@ -796,14 +781,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/前期2.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="14" lean-forward="true" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/output_data.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -812,22 +789,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output_data2.json">
+    <entry file="file://$PROJECT_DIR$/study3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-822">
-          <caret line="33996" column="9" lean-forward="true" selection-start-line="33996" selection-start-column="9" selection-end-line="33996" selection-end-column="9" />
+        <state relative-caret-position="440">
+          <caret line="108" column="13" lean-forward="true" selection-start-line="108" selection-start-column="13" selection-end-line="108" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#5052#7306#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/original.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" column="51" lean-forward="false" selection-start-line="32" selection-start-column="51" selection-end-line="32" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/study3.py">
+    <entry file="file://$PROJECT_DIR$/output_data2.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1548">
-          <caret line="244" column="0" lean-forward="true" selection-start-line="244" selection-start-column="0" selection-end-line="244" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-            <element signature="e#5058#7312#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="370">
+          <caret line="32821" column="12" lean-forward="true" selection-start-line="32821" selection-start-column="12" selection-end-line="32821" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/前期2.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="8" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
