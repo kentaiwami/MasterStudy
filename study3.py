@@ -8,7 +8,8 @@ import csv
 import math
 
 
-test_sentence = '以前、Trelloで行おうと決めてからずっと放置してしまっていたタスク管理について、ようやく着手することができた'
+# test_sentence = '以前、Trelloで行おうと決めてからずっと放置してしまっていたタスク管理について、ようやく着手することができた'
+# test_sentence = "文書をまとめたり、今後どのようなものを作るかの内容を決めていく上でチームメンバーと深く話し合うことで、ゲートキーパーの上田さんと土手さんや石別創成会議の関係性について気づかないところがたくさんあることに気づくことができた"
 # test_sentence = '上田さん土手さん創生会議の関係性を知ることができた'
 # test_sentence = '少しだらだらと長引きすぎた'
 
@@ -242,26 +243,28 @@ def td_idf(dict_data):
     #         print('text%d: %-16s %2.3f' % (i + 1, word, count))
 
 
-def cut_sentence(tfidf, sentence_list):
+def cut_sentence(tfidf, sentence_list, max_sentence_len):
     c = CaboCha.Parser("-u original.dic")
 
+    # TEST
+    # index = sentence_list.index(test_sentence)
 
-    # end_chunk = c_xml.find(".//chunk[@link='-1']")
-
-    index = sentence_list.index(test_sentence)
+    cuted_sentence_list = []
 
     for i in range(len(tfidf)):
-        # c_tree = c.parse(sentence_list[i])
-        c_tree = c.parse(test_sentence)
+        # TEST
+        # sentence = test_sentence
+        sentence = sentence_list[i]
+        c_tree = c.parse(sentence)
+
+        # TEST
+        # c_tree = c.parse(test_sentence)
         c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
         chunk_list = c_xml.findall(".//chunk")
         chunk_tfidf = {}
-        # if index != i:
-        #     continue
 
-
-
-        for word, count in sorted(tfidf[index].items(), key=lambda x: x[1], reverse=True):
+        # chunkごとのtfidf値の合計を計算
+        for word, count in sorted(tfidf[i].items(), key=lambda x: x[1], reverse=True):
             for id, chunk in enumerate(chunk_list):
                 for tok in chunk.findall(".//tok"):
                     if word == tok.text:
@@ -271,10 +274,78 @@ def cut_sentence(tfidf, sentence_list):
                             chunk_tfidf[id] = count
                         break
 
+        # 係り受けを用いてchunkごとのtfidf値を更新
+        for id, chunk in enumerate(chunk_list):
+            link = int(chunk.attrib['link'])
 
-            # print('text%d: %-16s %2.3f' % (index + 1, word, count))
-        print(sorted(chunk_tfidf.items(), key=lambda x:x[0]))
-        exit(-1)
+            if link == -1:
+                break
+
+            chunk_tfidf[link] += chunk_tfidf[id]
+
+        # 最大文字数以内になるようにtfidf値が小さい順で文節を削除
+        cut_index = 0
+        sorted_list = sorted(chunk_tfidf.items(), key=lambda x:x[1])
+        cuted_sentence_len = len(sentence)
+
+        flag = False
+        while cuted_sentence_len > max_sentence_len:
+            flag = True
+            cut_chunk_id = sorted_list[cut_index][0]
+            c_xml.remove(chunk_list[cut_chunk_id])
+            cut_index += 1
+
+            text = ''
+            for chunk in c_xml.findall(".//chunk"):
+                for tok in chunk.findall(".//tok"):
+                    text += tok.text
+
+            cuted_sentence_len = len(text)
+
+        if flag:
+            text = ''
+            for chunk in c_xml.findall(".//chunk"):
+
+                for tok in chunk.findall(".//tok"):
+                    text += tok.text
+            cuted_sentence_list.append(text)
+            print('****************************************')
+            print('origin:', sentence)
+            print('cut:', text)
+            print('****************************************')
+        # break
+
+    return cuted_sentence_list
+
+
+def get_median_ave_mode(dict_data):
+    sentence_list = []
+
+    for student_number in data.keys():
+        for day in data[student_number].keys():
+            for format in data[student_number][day].keys():
+                for sentence in data[student_number][day][format]:
+                    sentence_list.append(sentence)
+
+    sentence_len_list = []
+    for sentence in sentence_list:
+        sentence_len_list.append(len(sentence))
+
+    sentence_len_list.sort(reverse=True)
+
+    sentence_len_dict = {}
+    for sentence_len in sentence_len_list:
+        if sentence_len in sentence_len_dict:
+            sentence_len_dict[sentence_len] += 1
+        else:
+            sentence_len_dict[sentence_len] = 1
+
+    median = (sentence_len_list[int(len(sentence_list) / 2) - 1] + sentence_len_list[int(len(sentence_list) / 2)]) / 2
+    ave = sum(sentence_len_list) / len(sentence_len_list)
+    mode = sorted(sentence_len_dict.items(), key=lambda x:x[1], reverse=True)[0][0]
+
+    return median, ave, mode
+
 
 if __name__ == '__main__':
     # create_data()
@@ -283,11 +354,17 @@ if __name__ == '__main__':
     f = open("前期2.json")
     data = json.load(f)
 
+    # 中央値、平均値、最頻値の計算
+    median, ave, mode = get_median_ave_mode(data)
+    print('median: ', median)
+    print('ave: ', ave)
+    print('mode: ', mode)
+
     # tf-idfの計算
     merge_tfidf, sentence_list = td_idf(data)
 
     # 短縮処理の実行
-    cut_sentence(merge_tfidf, sentence_list)
+    cut_sentence(merge_tfidf, sentence_list, ave)
 
     # c = CaboCha.Parser("-u original.dic")
     # c_tree = c.parse(test_sentence)
