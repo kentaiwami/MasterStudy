@@ -4,7 +4,6 @@ import CaboCha
 from xml.etree import ElementTree
 import re
 import json
-import csv
 import math
 
 
@@ -147,31 +146,13 @@ def get_end_of_sentence(end_chunk, end_of_sentence_all_dict):
     return last_tok, one_day_last_tok_origin_list, end_of_sentence_all_dict
 
 
-def search_end_chunk_relation(c_xml, end_chunk):
-    end_chunk_id = end_chunk.attrib['id']
-    chunk_relation_list = c_xml.findall(".//chunk[@link='%s']" % end_chunk_id)
-
-    hoge = ''
-    for chunk in chunk_relation_list:
-        hoge += ' '
-        for tok in chunk.findall(".//tok"):
-            hoge += tok.text
-
-    hoge += '*'
-    for tok in end_chunk.findall(".//tok"):
-        hoge += tok.text
-    hoge += '*'
-
-    return hoge
-
-
 def td_idf(dict_data):
     sentence_list = []
 
     for student_number in dict_data.keys():
         for day in dict_data[student_number].keys():
-            for format in dict_data[student_number][day].keys():
-                for sentence in dict_data[student_number][day][format]:
+            for format_id in dict_data[student_number][day].keys():
+                for sentence in dict_data[student_number][day][format_id]:
                     sentence_list.append(sentence)
 
     num = len(sentence_list)
@@ -193,7 +174,7 @@ def td_idf(dict_data):
     tfidf = {}
     merge_tfidf = {}
     wordList = []
-    sum = 0
+    word_sum = 0
 
     for i in range(num):
         wordList.append(result[i].split()[:-1:2])  # wordListに分解された単語要素のみを格納
@@ -207,9 +188,9 @@ def td_idf(dict_data):
 
     for i in range(num):  # tfの分母を計算
         for word in allCount[i]:
-            sum = sum + allCount[i][word]
-        sub_tfstore[i] = sum
-        sum = 0
+            word_sum = word_sum + allCount[i][word]
+        sub_tfstore[i] = word_sum
+        word_sum = 0
 
     for i in range(num):  # tf値を計算し文章ごとに辞書に格納
         for word in allCount[i]:
@@ -265,27 +246,27 @@ def cut_sentence(tfidf, sentence_list, max_sentence_len):
 
         # chunkごとのtfidf値の合計を計算
         for word, count in sorted(tfidf[i].items(), key=lambda x: x[1], reverse=True):
-            for id, chunk in enumerate(chunk_list):
+            for chunk_id, chunk in enumerate(chunk_list):
                 for tok in chunk.findall(".//tok"):
                     if word == tok.text:
-                        if id in chunk_tfidf:
-                            chunk_tfidf[id] += count
+                        if chunk_id in chunk_tfidf:
+                            chunk_tfidf[chunk_id] += count
                         else:
-                            chunk_tfidf[id] = count
+                            chunk_tfidf[chunk_id] = count
                         break
 
         # 係り受けを用いてchunkごとのtfidf値を更新
-        for id, chunk in enumerate(chunk_list):
+        for chunk_id, chunk in enumerate(chunk_list):
             link = int(chunk.attrib['link'])
 
             if link == -1:
                 break
 
-            chunk_tfidf[link] += chunk_tfidf[id]
+            chunk_tfidf[link] += chunk_tfidf[chunk_id]
 
         # 最大文字数以内になるようにtfidf値が小さい順で文節を削除
         cut_index = 0
-        sorted_list = sorted(chunk_tfidf.items(), key=lambda x:x[1])
+        sorted_list = sorted(chunk_tfidf.items(), key=lambda x: x[1])
         cuted_sentence_len = len(sentence)
 
         flag = False
@@ -321,10 +302,10 @@ def cut_sentence(tfidf, sentence_list, max_sentence_len):
 def get_median_ave_mode(dict_data):
     sentence_list = []
 
-    for student_number in data.keys():
-        for day in data[student_number].keys():
-            for format in data[student_number][day].keys():
-                for sentence in data[student_number][day][format]:
+    for student_number in dict_data.keys():
+        for day in dict_data[student_number].keys():
+            for format_id in dict_data[student_number][day].keys():
+                for sentence in dict_data[student_number][day][format_id]:
                     sentence_list.append(sentence)
 
     sentence_len_list = []
@@ -342,12 +323,12 @@ def get_median_ave_mode(dict_data):
 
     median = (sentence_len_list[int(len(sentence_list) / 2) - 1] + sentence_len_list[int(len(sentence_list) / 2)]) / 2
     ave = sum(sentence_len_list) / len(sentence_len_list)
-    mode = sorted(sentence_len_dict.items(), key=lambda x:x[1], reverse=True)[0][0]
+    mode = sorted(sentence_len_dict.items(), key=lambda x: x[1], reverse=True)[0][0]
 
     return median, ave, mode
 
 
-if __name__ == '__main__':
+def main_function():
     # create_data()
 
     # データ読み込み
@@ -371,3 +352,7 @@ if __name__ == '__main__':
     # print(c_tree.toString(CaboCha.FORMAT_XML))
 
     # end_of_sentence_dict = search_all_sentence(data)
+
+
+if __name__ == '__main__':
+    main_function()
