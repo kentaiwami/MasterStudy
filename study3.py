@@ -169,8 +169,9 @@ def td_idf(dict_data):
 
     for student_number in dict_data.keys():
         for day in dict_data[student_number].keys():
-            for sentence in dict_data[student_number][day]:
-                sentence_list.append(sentence)
+            for format in dict_data[student_number][day].keys():
+                for sentence in dict_data[student_number][day][format]:
+                    sentence_list.append(sentence)
 
     num = len(sentence_list)
 
@@ -195,8 +196,6 @@ def td_idf(dict_data):
 
     for i in range(num):
         wordList.append(result[i].split()[:-1:2])  # wordListに分解された単語要素のみを格納
-        # print(wordList)
-        # exit(-1)
 
     for i in range(num):
         for word in wordList[i]:
@@ -236,13 +235,46 @@ def td_idf(dict_data):
         merge_tfidf[i] = tfidf
         tfidf = {}
 
-    index = sentence_list.index(test_sentence)
-    for i in range(num):  # 降順に出力する
-        if i != index:
-            continue
-        for word, count in sorted(merge_tfidf[i].items(), key=lambda x: x[1], reverse=True):
-            print('text%d: %-16s %2.3f' % (i + 1, word, count))
+    return merge_tfidf, sentence_list
 
+    # for i in range(num):  # 降順に出力する
+    #     for word, count in sorted(merge_tfidf[i].items(), key=lambda x: x[1], reverse=True):
+    #         print('text%d: %-16s %2.3f' % (i + 1, word, count))
+
+
+def cut_sentence(tfidf, sentence_list):
+    c = CaboCha.Parser("-u original.dic")
+
+
+    # end_chunk = c_xml.find(".//chunk[@link='-1']")
+
+    index = sentence_list.index(test_sentence)
+
+    for i in range(len(tfidf)):
+        # c_tree = c.parse(sentence_list[i])
+        c_tree = c.parse(test_sentence)
+        c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
+        chunk_list = c_xml.findall(".//chunk")
+        chunk_tfidf = {}
+        # if index != i:
+        #     continue
+
+
+
+        for word, count in sorted(tfidf[index].items(), key=lambda x: x[1], reverse=True):
+            for id, chunk in enumerate(chunk_list):
+                for tok in chunk.findall(".//tok"):
+                    if word == tok.text:
+                        if id in chunk_tfidf:
+                            chunk_tfidf[id] += count
+                        else:
+                            chunk_tfidf[id] = count
+                        break
+
+
+            # print('text%d: %-16s %2.3f' % (index + 1, word, count))
+        print(sorted(chunk_tfidf.items(), key=lambda x:x[0]))
+        exit(-1)
 
 if __name__ == '__main__':
     # create_data()
@@ -251,5 +283,14 @@ if __name__ == '__main__':
     f = open("前期2.json")
     data = json.load(f)
 
-    # td_idf(data)
-    end_of_sentence_dict = search_all_sentence(data)
+    # tf-idfの計算
+    merge_tfidf, sentence_list = td_idf(data)
+
+    # 短縮処理の実行
+    cut_sentence(merge_tfidf, sentence_list)
+
+    # c = CaboCha.Parser("-u original.dic")
+    # c_tree = c.parse(test_sentence)
+    # print(c_tree.toString(CaboCha.FORMAT_XML))
+
+    # end_of_sentence_dict = search_all_sentence(data)
