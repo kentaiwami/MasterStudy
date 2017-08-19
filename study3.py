@@ -16,7 +16,7 @@ import math
 def create_data():
     worksheet_list = study.get_worksheet_list('15RsrnLlocEQhGd-m27nXL8CuJcTwIs3rG8mO1VGx6Gs')
 
-    f = open("前期2.json", "w")
+    f = open("前期.json", "w")
 
     out_put_dict = {}
 
@@ -103,9 +103,9 @@ def search_all_sentence(dict_data):
 
         sentence_dict[student_number] = student_dict
 
-    # f = open('output_data2.json', 'w')
-    # json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
-    # f.close()
+    f = open('output_data.json', 'w')
+    json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
+    f.close()
     # print(sorted(end_of_sentence_all_dict.items(), key=lambda x: x[1], reverse=True))
     return sentence_dict
 
@@ -332,7 +332,7 @@ def main_function():
     # create_data()
 
     # データ読み込み
-    f = open("前期2.json")
+    f = open("前期.json")
     data = json.load(f)
 
     # 中央値、平均値、最頻値の計算
@@ -345,7 +345,7 @@ def main_function():
     merge_tfidf, sentence_list = td_idf(data)
 
     # 短縮処理の実行
-    cut_sentence(merge_tfidf, sentence_list, ave)
+    cut_sentence(merge_tfidf, sentence_list, int(ave))
 
     # c = CaboCha.Parser("-u original.dic")
     # c_tree = c.parse(test_sentence)
