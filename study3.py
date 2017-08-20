@@ -1,3 +1,4 @@
+from pip._vendor.distlib.compat import raw_input
 import study
 import MeCab
 import CaboCha
@@ -5,12 +6,14 @@ from xml.etree import ElementTree
 import re
 import json
 import math
+from collections import Counter
 
 
 # test_sentence = '以前、Trelloで行おうと決めてからずっと放置してしまっていたタスク管理について、ようやく着手することができた'
 # test_sentence = "文書をまとめたり、今後どのようなものを作るかの内容を決めていく上でチームメンバーと深く話し合うことで、ゲートキーパーの上田さんと土手さんや石別創成会議の関係性について気づかないところがたくさんあることに気づくことができた"
 # test_sentence = '上田さん土手さん創生会議の関係性を知ることができた'
 # test_sentence = '少しだらだらと長引きすぎた'
+test_sentence = 'リピーターにするための手段を考えるなど、目標を達成するための細かいプロセスを考えることができた'
 
 
 def create_data():
@@ -103,9 +106,9 @@ def search_all_sentence(dict_data):
 
         sentence_dict[student_number] = student_dict
 
-    f = open('output_data.json', 'w')
-    json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
-    f.close()
+    # f = open('output_data.json', 'w')
+    # json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
+    # f.close()
     # print(sorted(end_of_sentence_all_dict.items(), key=lambda x: x[1], reverse=True))
     return sentence_dict
 
@@ -146,17 +149,8 @@ def get_end_of_sentence(end_chunk, end_of_sentence_all_dict):
     return last_tok, one_day_last_tok_origin_list, end_of_sentence_all_dict
 
 
-def td_idf(dict_data):
-    sentence_list = []
-
-    for student_number in dict_data.keys():
-        for day in dict_data[student_number].keys():
-            for format_id in dict_data[student_number][day].keys():
-                for sentence in dict_data[student_number][day][format_id]:
-                    sentence_list.append(sentence)
-
+def td_idf(sentence_list):
     num = len(sentence_list)
-
     result = []
 
     for i in range(num):  # 文章の分解
@@ -217,7 +211,7 @@ def td_idf(dict_data):
         merge_tfidf[i] = tfidf
         tfidf = {}
 
-    return merge_tfidf, sentence_list
+    return merge_tfidf
 
     # for i in range(num):  # 降順に出力する
     #     for word, count in sorted(merge_tfidf[i].items(), key=lambda x: x[1], reverse=True):
@@ -228,24 +222,28 @@ def cut_sentence(tfidf, sentence_list, max_sentence_len):
     c = CaboCha.Parser("-u original.dic")
 
     # TEST
-    # index = sentence_list.index(test_sentence)
+    index = sentence_list.index(test_sentence)
 
     cuted_sentence_list = []
 
+    hoge = 0
+    cut_sum = 0
+
     for i in range(len(tfidf)):
         # TEST
-        # sentence = test_sentence
-        sentence = sentence_list[i]
-        c_tree = c.parse(sentence)
+        sentence = test_sentence
+        # sentence = sentence_list[i]
 
-        # TEST
-        # c_tree = c.parse(test_sentence)
+        # if 'できた' not in sentence:
+        #     continue
+
+        c_tree = c.parse(sentence)
         c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
         chunk_list = c_xml.findall(".//chunk")
         chunk_tfidf = {}
 
         # chunkごとのtfidf値の合計を計算
-        for word, count in sorted(tfidf[i].items(), key=lambda x: x[1], reverse=True):
+        for word, count in sorted(tfidf[index].items(), key=lambda x: x[1], reverse=True):
             for chunk_id, chunk in enumerate(chunk_list):
                 for tok in chunk.findall(".//tok"):
                     if word == tok.text:
@@ -270,11 +268,18 @@ def cut_sentence(tfidf, sentence_list, max_sentence_len):
         cuted_sentence_len = len(sentence)
 
         flag = False
+
+        last_chunk_id = int(c_xml.find(".//chunk[@link='-1']").attrib['id']) - 3
+
         while cuted_sentence_len > max_sentence_len:
             flag = True
             cut_chunk_id = sorted_list[cut_index][0]
             c_xml.remove(chunk_list[cut_chunk_id])
             cut_index += 1
+
+            if cut_chunk_id == last_chunk_id:
+                hoge += 1
+
 
             text = ''
             for chunk in c_xml.findall(".//chunk"):
@@ -284,6 +289,7 @@ def cut_sentence(tfidf, sentence_list, max_sentence_len):
             cuted_sentence_len = len(text)
 
         if flag:
+            cut_sum += 1
             text = ''
             for chunk in c_xml.findall(".//chunk"):
 
@@ -293,39 +299,56 @@ def cut_sentence(tfidf, sentence_list, max_sentence_len):
             print('****************************************')
             print('origin:', sentence)
             print('cut:', text)
+            # print('chunk tfidf: ', sorted_list)
+            c_tree = c.parse(sentence)
+            print(c_tree.toString(CaboCha.FORMAT_XML))
+            print(sorted_list)
+            # for word, count in sorted(tfidf[index].items(), key=lambda x: x[1], reverse=True):
+            #     print(word, count)
             print('****************************************')
-        # break
 
+            raw_input('>>>  ')
+
+    # print(hoge)
+    # print(cut_sum)
+    # print('')
+    # print(len(sentence_list))
     return cuted_sentence_list
 
 
-def get_median_ave_mode(dict_data):
-    sentence_list = []
-
-    for student_number in dict_data.keys():
-        for day in dict_data[student_number].keys():
-            for format_id in dict_data[student_number][day].keys():
-                for sentence in dict_data[student_number][day][format_id]:
-                    sentence_list.append(sentence)
-
+def get_median_ave_mode(sentence_list):
+    c = CaboCha.Parser("-u original.dic")
     sentence_len_list = []
+    chunk_len_list = []
+
     for sentence in sentence_list:
+        c_tree = c.parse(sentence)
+        c_xml = ElementTree.fromstring(c_tree.toString(CaboCha.FORMAT_XML))
+        chunk_len_list.append(len(c_xml.findall(".//chunk")))
+
         sentence_len_list.append(len(sentence))
 
     sentence_len_list.sort(reverse=True)
 
-    sentence_len_dict = {}
-    for sentence_len in sentence_len_list:
-        if sentence_len in sentence_len_dict:
-            sentence_len_dict[sentence_len] += 1
-        else:
-            sentence_len_dict[sentence_len] = 1
+    # 中央値、平均値、最頻値の計算(文字数)
+    if len(sentence_len_list) % 2 == 0:
+        char_len_median = sentence_len_list[int(len(sentence_len_list)/2) - 1]
+    else:
+        char_len_median = (sentence_len_list[int(len(sentence_list) / 2) - 1] + sentence_len_list[int(len(sentence_list) / 2)]) / 2
 
-    median = (sentence_len_list[int(len(sentence_list) / 2) - 1] + sentence_len_list[int(len(sentence_list) / 2)]) / 2
-    ave = sum(sentence_len_list) / len(sentence_len_list)
-    mode = sorted(sentence_len_dict.items(), key=lambda x: x[1], reverse=True)[0][0]
+    char_len_ave = sum(sentence_len_list) / len(sentence_len_list)
+    char_len_mode = Counter(sentence_len_list).most_common(1)[0][0]
 
-    return median, ave, mode
+    # 文節の計算
+    if len(chunk_len_list) % 2 == 0:
+        chunk_len_median = chunk_len_list[int(len(chunk_len_list)/2) - 1]
+    else:
+        chunk_len_median = (chunk_len_list[int(len(chunk_len_list)/2) - 1] + chunk_len_list[int(len(chunk_len_list)/2)]) / 2
+
+    chunk_len_ave = sum(chunk_len_list) / len(chunk_len_list)
+    chunk_len_mode = Counter(chunk_len_list).most_common(1)[0][0]
+
+    return char_len_median, char_len_ave, char_len_mode, chunk_len_median, chunk_len_ave, chunk_len_mode
 
 
 def main_function():
@@ -335,21 +358,37 @@ def main_function():
     f = open("前期.json")
     data = json.load(f)
 
+    sentence_list = []
+    for student_number in sorted(data.keys()):
+        # print('student: ', student_number)
+
+
+        # 文書リストを作成
+        for day in data[student_number].keys():
+            for format_id in data[student_number][day].keys():
+                for sentence in data[student_number][day][format_id]:
+                    sentence_list.append(sentence)
+
+        # 諸事情により、文章を1つも書いていない学生がいるため処理をスキップする
+        if len(sentence_list) == 0:
+            continue
+
     # 中央値、平均値、最頻値の計算
-    median, ave, mode = get_median_ave_mode(data)
-    print('median: ', median)
-    print('ave: ', ave)
-    print('mode: ', mode)
+    s_median, s_ave, s_mode, c_median, c_ave, c_mode = get_median_ave_mode(sentence_list)
+    # print('s_median: ', s_median)
+    # print('s_ave: ', s_ave)
+    # print('s_mode: ', s_mode)
+    # print('c_median: ', c_median)
+    # print('c_ave: ', c_ave)
+    # print('c_mode: ', c_mode)
 
     # tf-idfの計算
-    merge_tfidf, sentence_list = td_idf(data)
+    merge_tfidf = td_idf(sentence_list)
 
     # 短縮処理の実行
-    cut_sentence(merge_tfidf, sentence_list, int(ave))
+    cut_sentence(merge_tfidf, sentence_list, int(s_ave))
 
-    # c = CaboCha.Parser("-u original.dic")
-    # c_tree = c.parse(test_sentence)
-    # print(c_tree.toString(CaboCha.FORMAT_XML))
+    # raw_input('>>>')
 
     # end_of_sentence_dict = search_all_sentence(data)
 
