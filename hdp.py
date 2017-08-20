@@ -54,8 +54,7 @@ def main(sentence_list):
     # HDPモデルの推定
     model = models.hdpmodel.HdpModel(
         corpus,
-        id2word=corpus.dictionary,
-        alpha=0.1)
+        id2word=corpus.dictionary)
 
     # 各文書のトピックの重みを保存
     topics = [model[c] for c in corpus]
@@ -63,6 +62,9 @@ def main(sentence_list):
     test = 'リピーターにするための手段を考えるなど、目標を達成するための細かいプロセスを考えることができた'
     index = sentence_list.index(test)
     # indexes = [i for i, x in enumerate(sentence_list) if x == test]
+
+    # c_tree = cabocha.parse(test)
+    # print(c_tree.toString(CaboCha.FORMAT_XML))
 
     target_topic = topics[index][0]
 
@@ -72,6 +74,8 @@ def main(sentence_list):
     print('topic: ', target_topic)
     topicdata = model.print_topics(-1)
     print('topic detail: ', topicdata[target_topic[0]])
+
+    return target_topic[1]
 
     # 各トピックごとの単語の抽出（topicsの引数を-1にすることで、ありったけのトピックを結果として返してくれます。）
     # print(model.print_topics(num_topics=20, num_words=10))
