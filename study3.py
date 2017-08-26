@@ -14,7 +14,8 @@ import hdp
 # test_sentence = "文書をまとめたり、今後どのようなものを作るかの内容を決めていく上でチームメンバーと深く話し合うことで、ゲートキーパーの上田さんと土手さんや石別創成会議の関係性について気づかないところがたくさんあることに気づくことができた"
 # test_sentence = '上田さん土手さん創生会議の関係性を知ることができた'
 # test_sentence = '少しだらだらと長引きすぎた'
-test_sentence = 'リピーターにするための手段を考えるなど、目標を達成するための細かいプロセスを考えることができた'
+# test_sentence = 'リピーターにするための手段を考えるなど、目標を達成するための細かいプロセスを考えることができた'
+test_sentence = '利用するツールは応用的な使い方まで使いこなせるようになりたい'
 
 
 def create_data():
@@ -107,10 +108,10 @@ def search_all_sentence(dict_data):
 
         sentence_dict[student_number] = student_dict
 
-    # f = open('output_data.json', 'w')
-    # json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
-    # f.close()
-    # print(sorted(end_of_sentence_all_dict.items(), key=lambda x: x[1], reverse=True))
+    f = open('output_data.json', 'w')
+    json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
+    f.close()
+    print(sorted(end_of_sentence_all_dict.items(), key=lambda x: x[1], reverse=True))
     return sentence_dict
 
 
@@ -390,7 +391,7 @@ def main_function():
 
     # raw_input('>>>')
 
-    # end_of_sentence_dict = search_all_sentence(data)
+    end_of_sentence_dict = search_all_sentence(data)
 
 
 if __name__ == '__main__':

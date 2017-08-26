@@ -16415,16 +16415,6 @@
     "5月17日": {
       "K": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "参加した",
           "noun": [
             "南部",
@@ -16476,9 +16466,7 @@
         {
           "end_of_sentence": "機会である",
           "noun": [
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "FW",
             "前",
             "専門",
@@ -16491,16 +16479,6 @@
             "ある"
           ],
           "sentence": "Skype-MTGやFW前に専門家に話を伺える貴重な機会である"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "共有した",
@@ -16566,24 +16544,12 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "まとまっていない",
           "noun": [
             "京都府立医大",
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "現状",
             "こちら",
             "アイデア"
@@ -16611,16 +16577,6 @@
             "ある"
           ],
           "sentence": "先方との意見のすり合わせを行うためにも、きちんと認知症について学びアイデアの提案ができる状態にする必要がある"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "話してしまった",
@@ -16735,16 +16691,6 @@
     },
     "5月19日": {
       "K": [
-        {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
         {
           "end_of_sentence": "共有した",
           "noun": [
@@ -16873,16 +16819,6 @@
           "sentence": "正直システムを認知症の人に使ってもらうということが現実的ではないということで行き詰まっていただけに、アイデアに新しい方向性を示唆してくれるものであると感じた"
         },
         {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
-        },
-        {
           "end_of_sentence": "できた",
           "noun": [
             "昨年",
@@ -16976,16 +16912,6 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "感じた",
           "noun": [
             "メンバー",
@@ -17073,16 +16999,6 @@
             "感じる"
           ],
           "sentence": "リーダーに任せっきりになってしまっているのでサポートしていく必要があると感じた"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "あった",
@@ -17176,9 +17092,7 @@
             "既存",
             "調査",
             "現状",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "FW",
             "準備",
             "勉強",
@@ -17211,16 +17125,6 @@
             "感じる"
           ],
           "sentence": "既存のアイデアでもそれらを組み合わせて新たな付加価値を生み出せないかという考え方がグループ内にあり、まだまだ知識不足ではある中での一つの活動方針として有効であると感じた"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "なった",
@@ -17307,16 +17211,6 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "できなかった",
           "noun": [
             "メンバ",
@@ -17366,16 +17260,6 @@
             "たい"
           ],
           "sentence": "改めて認知症に関する現状を理解するために時間をかけていきたい"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "疎かになっていた",
@@ -17457,16 +17341,6 @@
     },
     "5月26日": {
       "K": [
-        {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
         {
           "end_of_sentence": "できた",
           "noun": [
@@ -17670,16 +17544,6 @@
           "sentence": "今後プレゼンをする機会も増えていくと思われるので資料作成についても、ただわかりやすいだけでなく発表者がプレゼンしやすいようなものを作っていけるようにしたい"
         },
         {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
-        },
-        {
           "end_of_sentence": "プレゼンした",
           "noun": [
             "教員",
@@ -17750,16 +17614,6 @@
       ],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "考えていきたい",
           "noun": [
             "自分",
@@ -17801,16 +17655,6 @@
             "たい"
           ],
           "sentence": "スライドなどの資料作成自体は集まらなくてもできることなので、今後は各自で事前に作る等して、メンバが集まれる時間にはメンバが集まる必要のある作業をして、時間を有効に活用したい"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "先延ばしにしてしまっていた",
@@ -17937,16 +17781,6 @@
     },
     "5月31日": {
       "K": [
-        {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
         {
           "end_of_sentence": "受講した",
           "noun": [
@@ -18098,16 +17932,6 @@
             "感じる"
           ],
           "sentence": "あるいは実際に認知症の方にあって見る必要があるなと感じた"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "頂いた",
@@ -18272,16 +18096,6 @@
       ],
       "P": [
         {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
-        },
-        {
           "end_of_sentence": "感じた",
           "noun": [
             "例",
@@ -18374,16 +18188,6 @@
     },
     "6月14日": {
       "K": [
-        {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
         {
           "end_of_sentence": "できた",
           "noun": [
@@ -18483,16 +18287,6 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "していなかった",
           "noun": [
             "京都",
@@ -18527,16 +18321,6 @@
             "たい"
           ],
           "sentence": "WSで経験したことを文章にまとめることで、自分の考えを整理したりなにか新しいアイデアのヒントが生まれるかもしれないで、なるべく早いうちに取り組みたい"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "決められていない",
@@ -18675,16 +18459,6 @@
     "6月16日": {
       "K": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "絞った",
           "noun": [
             "これ",
@@ -18730,16 +18504,6 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "行っていた",
           "noun": [
             "バタフライ",
@@ -18755,16 +18519,6 @@
             "いる"
           ],
           "sentence": "バタフライテストを用いてアイデアを絞る際の項目に、初めは自分たちがやりたいかどうかという要素を盛り込まずに行っていた"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "提案できなかった",
@@ -18861,16 +18615,6 @@
     "6月21日": {
       "K": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "行った",
           "noun": [
             "アイデア",
@@ -18922,16 +18666,6 @@
           "sentence": "これまでと別の視点である、データの加工に注力するのではなくデータの入出力をいかに簡単にするかといったものでも価値は生み出せるのではという考え方が出た"
         },
         {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
-        },
-        {
           "end_of_sentence": "参加した",
           "noun": [
             "アジャイルワークショップ",
@@ -18963,16 +18697,6 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "言える",
           "noun": [
             "アイデア",
@@ -18998,16 +18722,6 @@
             "たい"
           ],
           "sentence": "何らかの形で新しいアイデアに取り入れていきたい"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "わからなかった",
@@ -19287,16 +19001,6 @@
     "6月2日": {
       "K": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "行った",
           "noun": [
             "月例レビュー",
@@ -19371,23 +19075,11 @@
           "sentence": "識者の方とのMTGやWSを通してその辺りをきちんと把握して必要とされるシステムを作りたい"
         },
         {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
-        },
-        {
           "end_of_sentence": "確認した",
           "noun": [
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "流れ",
             "メンバ",
             "確認"
@@ -19404,9 +19096,7 @@
             "TA",
             "方々",
             "昨年",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "流れ",
             "1",
             ":",
@@ -19443,9 +19133,7 @@
             "当日",
             "動き",
             "確認",
-            "Skype",
-            "-",
-            "MTG"
+            "Skype-MTG"
           ],
           "original_pattern": [
             "望める",
@@ -19459,9 +19147,7 @@
             "TA",
             "方々",
             "昨年",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "様子"
           ],
           "original_pattern": [
@@ -19474,9 +19160,7 @@
           "end_of_sentence": "考えていた",
           "noun": [
             "それ",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "アイデア"
           ],
           "original_pattern": [
@@ -19488,9 +19172,7 @@
         {
           "end_of_sentence": "再確認できた",
           "noun": [
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "アイデア",
             "識者",
             "提案",
@@ -19528,16 +19210,6 @@
         }
       ],
       "P": [
-        {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
         {
           "end_of_sentence": "できなかった",
           "noun": [
@@ -19668,16 +19340,6 @@
             "たい"
           ],
           "sentence": "今後はもう少し抽象的なことから具体的なことへと段階を踏んだ説明をすることで、相手に自分たちが考えているアイデアの全体像をイメージさせられるようにしていきたい"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "してしまった",
@@ -19882,23 +19544,11 @@
     "6月7日": {
       "K": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "確認した",
           "noun": [
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "前",
             "全体",
             "流れ",
@@ -20030,23 +19680,11 @@
           "sentence": "ただ、全てのことについて確認できたわけではないので、他の情報についても補完や再確認の意味を込めてしっかりと共有していきたい"
         },
         {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
-        },
-        {
           "end_of_sentence": "行った",
           "noun": [
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG"
+            "Skype-MTG"
           ],
           "original_pattern": [
             "行う"
@@ -20146,16 +19784,6 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "行った",
           "noun": [
             "先日",
@@ -20230,9 +19858,7 @@
             "講座",
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "これ",
             "活動",
             "それ",
@@ -20365,9 +19991,7 @@
           "end_of_sentence": "否定派)",
           "noun": [
             "今回",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "成本",
             "先生",
             "認知症",
@@ -20421,16 +20045,6 @@
     "6月9日": {
       "K": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "確認した",
           "noun": [
             "翌日",
@@ -20451,9 +20065,7 @@
             "前回",
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "同様",
             "当日",
             "行動",
@@ -20492,16 +20104,6 @@
             "ある"
           ],
           "sentence": "また、行動予定をGoogle Docsでまとめたので、あとからの確認や修正も容易である"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "した",
@@ -20572,16 +20174,6 @@
       "O": [],
       "P": [
         {
-          "end_of_sentence": "4限",
-          "noun": [
-            "4限"
-          ],
-          "original_pattern": [
-            "よげん"
-          ],
-          "sentence": "4限"
-        },
-        {
           "end_of_sentence": "できていなかった",
           "noun": [
             "京都",
@@ -20641,16 +20233,6 @@
             "たい"
           ],
           "sentence": "結果として確認することはできたが、プロジェクトの時間が終わってからになってしまったので、今後このような機会があれば疑問に思った時点ですぐに聞くといったようにして、参加者がきちんと共通認識を持てているのかを確認しながら活動を進めていきたい"
-        },
-        {
-          "end_of_sentence": "5限",
-          "noun": [
-            "5限"
-          ],
-          "original_pattern": [
-            "ごげん"
-          ],
-          "sentence": "5限"
         },
         {
           "end_of_sentence": "感じた",
@@ -32280,9 +31862,7 @@
           "noun": [
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "6",
             "/",
             "7",
@@ -32478,9 +32058,7 @@
             ")",
             "成本",
             "先生",
-            "Skype",
-            "-",
-            "MTG",
+            "Skype-MTG",
             "システム",
             "案",
             "共有"
