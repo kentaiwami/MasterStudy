@@ -108,10 +108,10 @@ def search_all_sentence(dict_data):
 
         sentence_dict[student_number] = student_dict
 
-    f = open('output_data.json', 'w')
-    json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
-    f.close()
-    print(sorted(end_of_sentence_all_dict.items(), key=lambda x: x[1], reverse=True))
+    # f = open('output_data.json', 'w')
+    # json.dump(sentence_dict, f, ensure_ascii=False, indent=2, sort_keys=True)
+    # f.close()
+    # print(sorted(end_of_sentence_all_dict.items(), key=lambda x: x[1], reverse=True))
     return sentence_dict
 
 
@@ -358,19 +358,19 @@ def main_function():
     data = json.load(f)
 
 
-    for student_number in sorted(data.keys()):
-        # print('student: ', student_number)
-        sentence_list = []
-
-        # 文書リストを作成
-        for day in data[student_number].keys():
-            for format_id in data[student_number][day].keys():
-                for sentence in data[student_number][day][format_id]:
-                    sentence_list.append(sentence)
-
-        # 諸事情により、文章を1つも書いていない学生がいるため処理をスキップする
-        if len(sentence_list) == 0:
-            continue
+    # for student_number in sorted(data.keys()):
+    #     # print('student: ', student_number)
+    #     sentence_list = []
+    #
+    #     # 文書リストを作成
+    #     for day in data[student_number].keys():
+    #         for format_id in data[student_number][day].keys():
+    #             for sentence in data[student_number][day][format_id]:
+    #                 sentence_list.append(sentence)
+    #
+    #     # 諸事情により、文章を1つも書いていない学生がいるため処理をスキップする
+    #     if len(sentence_list) == 0:
+    #         continue
 
     # 中央値、平均値、最頻値の計算
     #     s_median, s_ave, s_mode, c_median, c_ave, c_mode = get_median_ave_mode(sentence_list)
@@ -391,7 +391,35 @@ def main_function():
 
     # raw_input('>>>')
 
-    end_of_sentence_dict = search_all_sentence(data)
+    # TODO
+    # end_of_sentence_dict = search_all_sentence(data)
+    #
+    # count_dict = {}
+    #
+    # for student in end_of_sentence_dict.keys():
+    #     for day in end_of_sentence_dict[student].keys():
+    #         for kpto in end_of_sentence_dict[student][day].keys():
+    #             for sentence in end_of_sentence_dict[student][day][kpto]:
+    #                 if len(sentence['original_pattern']) != 0:
+    #                     key = sentence['original_pattern'][-1]
+    #                     count_dict[key] = count_dict.get(key, 0) + 1
+    #
+    #                     if sentence['original_pattern'][-1] == 'できる':
+    #                         print(sentence['sentence'])
+
+    for student in data.keys():
+        print(student)
+        for day in data[student].keys():
+            for kpto in data[student][day].keys():
+                if kpto != 'K':
+                    continue
+
+                for sentence in data[student][day][kpto]:
+                    print(sentence)
+        break
+
+
+    # print(Counter(count_dict).most_common(50))
 
 
 if __name__ == '__main__':
