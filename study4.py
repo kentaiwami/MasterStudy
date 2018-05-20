@@ -1,4 +1,5 @@
 from gensim.models.word2vec import Word2Vec
+from gensim.models import KeyedVectors
 import MeCab
 import numpy as np
 from scipy import spatial
@@ -18,11 +19,6 @@ def word2vec():
         print(x[0], x[1])
 
 
-# def mecab_test():
-
-    # print(mecab.parse("彼は昨日、お腹を壊した"))
-
-
 def avg_feature_vector(sentence, model, num_features):
     words = mecab.parse(sentence).replace(' \n', '').split() # mecabの分かち書きでは最後に改行(\n)が出力されてしまうため、除去
     feature_vec = np.zeros((num_features,), dtype="float32") # 特徴ベクトルの入れ物を初期化
@@ -35,7 +31,6 @@ def avg_feature_vector(sentence, model, num_features):
 
 def sentence_similarity(sentence_1, sentence_2):
     # 今回使うWord2Vecのモデルは300次元の特徴ベクトルで生成されているので、num_featuresも300に指定
-    num_features=50
     sentence_1_avg_vector = avg_feature_vector(sentence_1, word2vec_model, num_features)
     sentence_2_avg_vector = avg_feature_vector(sentence_2, word2vec_model, num_features)
     # １からベクトル間の距離を引いてあげることで、コサイン類似度を計算
@@ -44,10 +39,12 @@ def sentence_similarity(sentence_1, sentence_2):
 
 if __name__ == '__main__':
     mecab = MeCab.Tagger("-Owakati")
-    word2vec_model = Word2Vec.load('word2vec.gensim.model')
+    num_features = 200
+    # word2vec_model = Word2Vec.load('word2vec.gensim.model')
+    word2vec_model = KeyedVectors.load_word2vec_format('model/tohoku/model.bin', binary=True)
 
     result = sentence_similarity(
         "タスク管理について、ようやく着手することができた",
-        "タスク管理にようやく着手できた"
+        "本日はお集まりいただき、誠にありがとうございます"
     )
     print(result)
