@@ -104,3 +104,4 @@ ENV/
 all_student_wakachi
 model
 *.bz2
+2017/*.txt
