@@ -6,10 +6,10 @@ from scipy import spatial
 
 
 
-def word2vec(model):
+# def word2vec(model):
 
     # 2単語の類似度
-    print(model.similarity('ポスター', 'イーゼル'))
+    # print(model.similarity('ポスター', 'イーゼル'))
 
     # 単語の加減乗除
     # out = model.most_similar(positive=["女", '国王'], negative=["男"])
@@ -58,14 +58,7 @@ if __name__ == '__main__':
     stopwords = [x.replace('\n', '') for x in stopwords]
 
     for target_sent in target_sents:
-#         re = []
         for sentence in sentences:
-#             # Qitaのやり方
-#             # result = sentence_similarity(
-#             #     target_sent,
-#             #     sentence,
-#             #     word2vec_model
-#             # )
             wakati_target_sent = mecab.parse(target_sent).replace(' \n', '').split()
             wakati_target_sent = [x for x in wakati_target_sent if x not in stopwords]
             wakati_target_sent = ' '.join(wakati_target_sent)
@@ -76,14 +69,7 @@ if __name__ == '__main__':
 
             # WMD
             dis = word2vec_model.wmdistance(wakati_target_sent, wakati_sentence)
-            # re.append(dis)
-
-            # print(wakati_target_sent)
-            # print(wakati_sentence)
-
 
             print(dis)
 
-
-        # print(target_sent, sum(re)/len(re))
         print('***********************************')
