@@ -16,6 +16,7 @@ def main():
             keep_to_distance(student_number, t_list, k_list, day)
 
         print('*************************:')
+        break
 
 
 def keep_to_distance(student_number, sentence_list, k_list, day):
@@ -27,7 +28,7 @@ def keep_to_distance(student_number, sentence_list, k_list, day):
                 print('Keep:', Keep)
                 print('Sentence day:', day)
                 print('Sentence:', sentence)
-            print('Distance', get_distance(sentence, Keep))
+                print('Distance', get_distance(sentence, Keep))
 
 
 def get_keep(student_number, pt_date):
@@ -53,21 +54,43 @@ def get_stopwords():
     return stopwords
 
 
-def get_distance(doc1, doc2):
+def get_distance(sentence, keep):
     stopwords = get_stopwords()
 
-    wakati_doc1 = mecab.parse(doc1).replace(' \n', '').split()
-    wakati_doc1 = [x for x in wakati_doc1 if x not in stopwords]
-    wakati_doc1 = ' '.join(wakati_doc1)
+    # ストップワードを除いた分かち書きリストを生成
+    sentence_list = mecab.parse(sentence).replace(' \n', '').split()
+    sentence_list = [x for x in sentence_list if x not in stopwords]
+    keep_list = mecab.parse(keep).replace(' \n', '').split()
+    keep_list = [x for x in keep_list if x not in stopwords]
 
-    wakati_doc2 = mecab.parse(doc2).replace(' \n', '').split()
-    wakati_doc2 = [x for x in wakati_doc2 if x not in stopwords]
-    wakati_doc2 = ' '.join(wakati_doc2)
+    results = []
+    for ten_words_sentence in get_ten_words(sentence_list):
+        for ten_words_keep in get_ten_words(keep_list):
 
-    # WMD
-    dis = word2vec_model.wmdistance(wakati_doc1, wakati_doc2)
+            dis = word2vec_model.wmdistance(ten_words_sentence, ten_words_keep)
+            results.append({
+                'ten_words_sentence': ten_words_sentence,
+                'ten_words_keep': ten_words_keep,
+                'distance': dis
+            })
 
     return dis
+
+
+def get_ten_words(sentence_list):
+    results = []
+    s = 0
+    e = 10
+    while True:
+        if len(sentence_list[s:e]) == 0:
+            break
+
+        results.append(' '.join(sentence_list[s:e]))
+
+        s = e
+        e += 10
+
+    return results
 
 
 if __name__ == '__main__':
