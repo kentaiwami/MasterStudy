@@ -65,16 +65,22 @@ def get_distance(sentence, keep):
 
     results = []
     for ten_words_sentence in get_ten_words(sentence_list):
+
+        one_sent_dis = []
         for ten_words_keep in get_ten_words(keep_list):
 
             dis = word2vec_model.wmdistance(ten_words_sentence, ten_words_keep)
+
             results.append({
                 'ten_words_sentence': ten_words_sentence,
                 'ten_words_keep': ten_words_keep,
                 'distance': dis
             })
+            one_sent_dis.append(dis)
 
-    return dis
+        results[-1]['average'] = sum(one_sent_dis) / len(one_sent_dis)
+
+    return results
 
 
 def get_ten_words(sentence_list):
@@ -99,4 +105,7 @@ if __name__ == '__main__':
 
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     word2vec_model = KeyedVectors.load_word2vec_format('model/tohoku/model.bin', binary=True)
-    main()
+    # main()
+    sent1 = '分担ごとに作業に取り掛かることで、効率よく作業を進めることが出来たと思う。ポスターはレイアウトの作成が完了し、ヒアリングで得られた意見や要望をまとめることも出来た。'
+    sent2 = '町会の方から頂いたご意見や要望の洗い出しと、機能がなぜ必要なのかをスプレッドシートにまとめる。優先度はグループ内で話し合って決めたい。'
+    hoge = get_distance(sent1, sent2)
