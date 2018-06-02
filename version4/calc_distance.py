@@ -12,34 +12,22 @@ def main():
             t_list = data[student_number][day]['T']
             k_list = get_keep(student_number, date)
 
-            '''
-            KeepとProblemを総ナメ
-            '''
-            # for p_index, Problem in enumerate(p_list, 1):
-            #     for KeepObj in k_list:
-            #         for k_index, Keep in enumerate(KeepObj['keep'], 1):
-            #             print(student_number)
-            #             print('Keep day:', KeepObj['day'])
-            #             print('Keep:', Keep)
-            #             print('Problem day:', day)
-            #             print('Problem:', Problem)
-            #             print('Distance', get_distance(Problem, Keep))
-
-
-            '''
-            KeepとTryを総ナメ
-            '''
-            # for t_index, Try in enumerate(t_list):
-            #     for KeepObj in k_list:
-            #         for k_index, Keep in enumerate(KeepObj['keep'], 1):
-            #             print(student_number)
-                        # print('Keep day:', KeepObj['day'])
-                        # print('Keep:', Keep)
-                        # print('Try day:', day)
-                        # print('Try:', Try)
-                        # print('Distance', get_distance(Try, Keep))
+            keep_to_distance(student_number, p_list, k_list, day)
+            keep_to_distance(student_number, t_list, k_list, day)
 
         print('*************************:')
+
+
+def keep_to_distance(student_number, sentence_list, k_list, day):
+    for i, sentence in enumerate(sentence_list, 1):
+        for KeepObj in k_list:
+            for k_index, Keep in enumerate(KeepObj['keep'], 1):
+                print(student_number)
+                print('Keep day:', KeepObj['day'])
+                print('Keep:', Keep)
+                print('Sentence day:', day)
+                print('Sentence:', sentence)
+            print('Distance', get_distance(sentence, Keep))
 
 
 def get_keep(student_number, pt_date):
