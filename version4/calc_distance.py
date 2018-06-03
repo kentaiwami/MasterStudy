@@ -66,19 +66,20 @@ def get_distance(sentence, keep):
     results = []
     for ten_words_sentence in get_ten_words(sentence_list):
 
-        one_sent_dis = []
+        record = []
+
         for ten_words_keep in get_ten_words(keep_list):
 
             dis = word2vec_model.wmdistance(ten_words_sentence, ten_words_keep)
 
-            results.append({
+            record.append({
                 'ten_words_sentence': ten_words_sentence,
                 'ten_words_keep': ten_words_keep,
                 'distance': dis
             })
-            one_sent_dis.append(dis)
 
-        results[-1]['average'] = sum(one_sent_dis) / len(one_sent_dis)
+        ave = [x['distance'] for x in record]
+        results.append({'record': record, 'average': sum(ave) / len(ave)})
 
     return results
 
@@ -109,3 +110,7 @@ if __name__ == '__main__':
     sent1 = '分担ごとに作業に取り掛かることで、効率よく作業を進めることが出来たと思う。ポスターはレイアウトの作成が完了し、ヒアリングで得られた意見や要望をまとめることも出来た。'
     sent2 = '町会の方から頂いたご意見や要望の洗い出しと、機能がなぜ必要なのかをスプレッドシートにまとめる。優先度はグループ内で話し合って決めたい。'
     hoge = get_distance(sent1, sent2)
+
+    for hhh in hoge:
+        print(hhh)
+        print('**************************')
