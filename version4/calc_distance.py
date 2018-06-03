@@ -6,13 +6,19 @@ import MeCab
 
 def main():
     for student_number in data.keys():
+        # TODO テスト用
+        student_number = '1015110'
+
         for day in data[student_number].keys():
+            # TODO テスト用
+            day = '6月16日'
+
             date = datetime.datetime.strptime('2017年'+day, "%Y年%m月%d日")
             p_list = data[student_number][day]['P']
             t_list = data[student_number][day]['T']
             k_list = get_keep(student_number, date)
 
-            keep_to_distance(student_number, p_list, k_list, day)
+            # keep_to_distance(student_number, p_list, k_list, day)
             keep_to_distance(student_number, t_list, k_list, day)
 
         print('*************************:')
@@ -21,6 +27,8 @@ def main():
 
 def keep_to_distance(student_number, sentence_list, k_list, day):
     for i, sentence in enumerate(sentence_list, 1):
+        HOGE = []
+
         for KeepObj in k_list:
             for k_index, Keep in enumerate(KeepObj['keep'], 1):
                 print(student_number)
@@ -64,11 +72,10 @@ def get_distance(sentence, keep):
     keep_list = [x for x in keep_list if x not in stopwords]
 
     results = []
-    for ten_words_sentence in get_ten_words(sentence_list):
-
+    for ten_words_keep in get_ten_words(keep_list):
         record = []
-
-        for ten_words_keep in get_ten_words(keep_list):
+        tmp_distance = []
+        for ten_words_sentence in get_ten_words(sentence_list):
 
             dis = word2vec_model.wmdistance(ten_words_sentence, ten_words_keep)
 
@@ -77,9 +84,9 @@ def get_distance(sentence, keep):
                 'ten_words_keep': ten_words_keep,
                 'distance': dis
             })
+            tmp_distance.append(dis)
 
-        ave = [x['distance'] for x in record]
-        results.append({'record': record, 'average': sum(ave) / len(ave)})
+        results.append({'record': record, 'average': sum(tmp_distance) / len(tmp_distance)})
 
     return results
 
@@ -106,11 +113,7 @@ if __name__ == '__main__':
 
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     word2vec_model = KeyedVectors.load_word2vec_format('model/tohoku/model.bin', binary=True)
-    # main()
-    sent1 = '分担ごとに作業に取り掛かることで、効率よく作業を進めることが出来たと思う。ポスターはレイアウトの作成が完了し、ヒアリングで得られた意見や要望をまとめることも出来た。'
-    sent2 = '町会の方から頂いたご意見や要望の洗い出しと、機能がなぜ必要なのかをスプレッドシートにまとめる。優先度はグループ内で話し合って決めたい。'
-    hoge = get_distance(sent1, sent2)
-
-    for hhh in hoge:
-        print(hhh)
-        print('**************************')
+    main()
+    # sent1 = '分担ごとに作業に取り掛かることで、効率よく作業を進めることが出来たと思う。ポスターはレイアウトの作成が完了し、ヒアリングで得られた意見や要望をまとめることも出来た。'
+    # sent2 = '町会の方から頂いたご意見や要望の洗い出しと、機能がなぜ必要なのかをスプレッドシートにまとめる。優先度はグループ内で話し合って決めたい。'
+    # hoge = get_distance(sent1, sent2)
