@@ -20,7 +20,8 @@ def main():
 
             # keep_to_distance(student_number, p_list, k_list, day)
             results_average_min, results_distance_min = keep_to_distance(student_number, t_list, k_list, day)
-        print('*************************:')
+            results_average_min, results_distance_min = convert_dict_list(results_average_min, results_distance_min)
+
         break
 
 
@@ -50,14 +51,14 @@ def keep_to_distance(student_number, sentence_list, k_list, day):
 
                 distance_min_list.append(min(tmp_distance))
 
-                print(student_number)
-                print('Keep day:', KeepObj['day'])
-                print('Keep:', Keep)
-                print('Sentence day:', day)
-                print('Sentence:', sentence)
-                print('Distance:', distances)
-                print('Average Min:', average_min_distance)
-                print('Distance Min:', min(tmp_distance))
+                # print(student_number)
+                # print('Keep day:', KeepObj['day'])
+                # print('Keep:', Keep)
+                # print('Sentence day:', day)
+                # print('Sentence:', sentence)
+                # print('Distance:', distances)
+                # print('Average Min:', average_min_distance)
+                # print('Distance Min:', min(tmp_distance))
 
         results_average_min.append(average_min_list)
         results_distance_min.append(distance_min_list)
@@ -129,6 +130,40 @@ def get_ten_words(sentence_list):
 
         s = e
         e += 10
+
+    return results
+
+
+def convert_dict_list(results_average_min_list, results_distance_min_list):
+    # チェック
+    if len(results_average_min_list) != len(results_distance_min_list):
+        raise Exception('Error')
+    for tmp1, tmp2 in zip(results_average_min_list, results_distance_min_list):
+        if len(tmp1) != len(tmp2):
+            raise Exception('Error')
+
+    new_results_average_min_list = []
+    new_results_distance_min_list = []
+
+    for results in zip(results_average_min_list, results_distance_min_list):
+        results_average_min = {}
+        results_distance_min = {}
+
+        for i, results_distance in enumerate(zip(results[0], results[1])):
+            results_average_min[i] = results_distance[0]
+            results_distance_min[i] = results_distance[1]
+
+        new_results_average_min_list.append(results_average_min)
+        new_results_distance_min_list.append(results_distance_min)
+
+    return new_results_average_min_list, new_results_distance_min_list
+
+
+def convert_keep_flat(k_list):
+    results = []
+
+    for keep_obj in k_list:
+        results += keep_obj['keep']
 
     return results
 
