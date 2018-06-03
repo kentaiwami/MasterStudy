@@ -7,25 +7,37 @@ import MeCab
 def main():
     for student_number in data.keys():
         # TODO テスト用
-        student_number = '1015110'
+        student_number = '1015263'
 
         for day in data[student_number].keys():
             # TODO テスト用
-            day = '6月16日'
+            # day = '6月16日'
 
             date = datetime.datetime.strptime('2017年'+day, "%Y年%m月%d日")
             p_list = data[student_number][day]['P']
             t_list = data[student_number][day]['T']
             k_list = get_keep(student_number, date)
 
-            # keep_to_distance(student_number, p_list, k_list, day)
-            results_average_min, results_distance_min = keep_to_distance(student_number, t_list, k_list, day)
-            results_average_min, results_distance_min = convert_dict_list(results_average_min, results_distance_min)
+            for sent_list in [p_list, t_list]:
+                results_average_min, results_distance_min = keep_to_distance(sent_list, k_list)
+                results_average_min, results_distance_min = convert_dict_list(results_average_min, results_distance_min)
+                flat_k_list = convert_keep_flat(k_list)
+
+                output_results(
+                    student_number,
+                    flat_k_list,
+                    k_list,
+                    day,
+                    results_average_min,
+                    results_distance_min,
+                    t_list,
+                    3
+                )
 
         break
 
 
-def keep_to_distance(student_number, sentence_list, k_list, day):
+def keep_to_distance(sentence_list, k_list):
     results_average_min = []
     results_distance_min = []
 
@@ -50,15 +62,6 @@ def keep_to_distance(student_number, sentence_list, k_list, day):
                         tmp_distance.append(obj['distance'])
 
                 distance_min_list.append(min(tmp_distance))
-
-                # print(student_number)
-                # print('Keep day:', KeepObj['day'])
-                # print('Keep:', Keep)
-                # print('Sentence day:', day)
-                # print('Sentence:', sentence)
-                # print('Distance:', distances)
-                # print('Average Min:', average_min_distance)
-                # print('Distance Min:', min(tmp_distance))
 
         results_average_min.append(average_min_list)
         results_distance_min.append(distance_min_list)
@@ -134,6 +137,13 @@ def get_ten_words(sentence_list):
     return results
 
 
+def get_keep_day(keep_list, target_sentence):
+    for keep_obj in keep_list:
+        for i, keep in enumerate(keep_obj['keep']):
+            if keep == target_sentence:
+                return i, keep_obj['day']
+
+
 def convert_dict_list(results_average_min_list, results_distance_min_list):
     # チェック
     if len(results_average_min_list) != len(results_distance_min_list):
@@ -166,6 +176,41 @@ def convert_keep_flat(k_list):
         results += keep_obj['keep']
 
     return results
+
+
+def output_results(student, flat_k_list, k_list, day, average_min_list, distance_min_list, sentence_list, rank):
+    print(student)
+    for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list)):
+        sliced = sorted(average_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
+
+        for distance_index in sliced:
+            keep = flat_k_list[distance_index[0]]
+            k_position, k_day = get_keep_day(k_list, keep)
+            print('Keep Day:{} Keep Position:{}'.format(k_day, k_position))
+            print('Keep:{}'.format(keep))
+            print('Sentence Day:{} Sentence Position:{}'.format(day, i))
+            print('Sentence:{}'.format(average_min_sentence[1]))
+            print('Distance:{}'.format(distance_index[1]))
+            print('')
+
+        print('***********************')
+
+    print('-------------------------------------')
+
+    for i, distance_min_sentence in enumerate(zip(distance_min_list, sentence_list)):
+        sliced = sorted(distance_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
+
+        for distance_index in sliced:
+            keep = flat_k_list[distance_index[0]]
+            k_position, k_day = get_keep_day(k_list, keep)
+            print('Keep Day:{} Keep Position:{}'.format(k_day, k_position))
+            print('Keep:{}'.format(keep))
+            print('Sentence Day:{} Sentence Position:{}'.format(day, i))
+            print('Sentence:{}'.format(distance_min_sentence[1]))
+            print('Distance:{}'.format(distance_index[1]))
+            print('')
+
+        print('***********************')
 
 
 if __name__ == '__main__':
