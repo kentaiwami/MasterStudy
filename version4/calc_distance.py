@@ -19,24 +19,50 @@ def main():
             k_list = get_keep(student_number, date)
 
             # keep_to_distance(student_number, p_list, k_list, day)
-            keep_to_distance(student_number, t_list, k_list, day)
-
+            results_average_min, results_distance_min = keep_to_distance(student_number, t_list, k_list, day)
         print('*************************:')
         break
 
 
 def keep_to_distance(student_number, sentence_list, k_list, day):
+    results_average_min = []
+    results_distance_min = []
+
     for i, sentence in enumerate(sentence_list, 1):
-        HOGE = []
+        average_min_list = []
+        distance_min_list = []
 
         for KeepObj in k_list:
             for k_index, Keep in enumerate(KeepObj['keep'], 1):
+                distances = get_distance(sentence, Keep)
+
+                # Keep10語ずつの平均値の最小を格納していく
+                average_min_distance = min(x['average'] for x in distances)
+                average_min_list.append(average_min_distance)
+
+                # Keepと各文の全組み合わせの中から最小値を格納
+                records = [x['record'] for x in distances]
+                tmp_distance = []
+
+                for record in records:
+                    for obj in record:
+                        tmp_distance.append(obj['distance'])
+
+                distance_min_list.append(min(tmp_distance))
+
                 print(student_number)
                 print('Keep day:', KeepObj['day'])
                 print('Keep:', Keep)
                 print('Sentence day:', day)
                 print('Sentence:', sentence)
-                print('Distance', get_distance(sentence, Keep))
+                print('Distance:', distances)
+                print('Average Min:', average_min_distance)
+                print('Distance Min:', min(tmp_distance))
+
+        results_average_min.append(average_min_list)
+        results_distance_min.append(distance_min_list)
+
+    return results_average_min, results_distance_min
 
 
 def get_keep(student_number, pt_date):
