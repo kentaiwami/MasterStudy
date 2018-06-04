@@ -2,12 +2,13 @@ import json
 import datetime
 from gensim.models import KeyedVectors
 import MeCab
+import csv
 
 
 def main():
     for student_number in data.keys():
         # TODO テスト用
-        student_number = '1015263'
+        # student_number = '1015110'
 
         for day in data[student_number].keys():
             # TODO テスト用
@@ -18,10 +19,22 @@ def main():
             t_list = data[student_number][day]['T']
             k_list = get_keep(student_number, date)
 
-            for sent_list in [p_list, t_list]:
-                results_average_min, results_distance_min = keep_to_distance(sent_list, k_list)
+            for sent_list in zip([p_list, t_list], ['P', 'T']):
+                results_average_min, results_distance_min = keep_to_distance(sent_list[0], k_list)
                 results_average_min, results_distance_min = convert_dict_list(results_average_min, results_distance_min)
                 flat_k_list = convert_keep_flat(k_list)
+
+                # output_file_results(
+                #     student_number,
+                #     flat_k_list,
+                #     k_list,
+                #     day,
+                #     results_average_min,
+                #     results_distance_min,
+                #     sent_list[0],
+                #     3,
+                #     sent_list[1]
+                # )
 
                 output_results(
                     student_number,
@@ -30,11 +43,11 @@ def main():
                     day,
                     results_average_min,
                     results_distance_min,
-                    t_list,
+                    sent_list[0],
                     3
                 )
 
-        break
+        # break
 
 
 def keep_to_distance(sentence_list, k_list):
@@ -178,8 +191,63 @@ def convert_keep_flat(k_list):
     return results
 
 
+def output_file_results(student, flat_k_list, k_list, day, average_min_list, distance_min_list, sentence_list, rank, flag):
+    print(student)
+
+    output_file = open('2017/output/{}/{}_ave.csv'.format(student, flag), 'a')
+    writer = csv.writer(output_file, lineterminator='\n')
+
+
+    for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list)):
+        writer.writerow([day, i, '', average_min_sentence[1]])
+
+        sliced = sorted(average_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
+
+        for distance_index in sliced:
+            keep = flat_k_list[distance_index[0]]
+            k_position, k_day = get_keep_day(k_list, keep)
+            print('Keep Day:{} Keep Position:{}'.format(k_day, k_position))
+            print('Keep:{}'.format(keep))
+            print('Sentence Day:{} Sentence Position:{}'.format(day, i))
+            print('Sentence:{}'.format(average_min_sentence[1]))
+            print('Distance:{}'.format(distance_index[1]))
+            print('')
+
+            writer.writerow([k_day, k_position, distance_index[1], keep])
+
+        print('***********************')
+
+    print('-------------------------------------')
+    output_file.close()
+
+    output_file = open('2017/output/{}/{}_min.csv'.format(student, flag), 'a')
+    writer = csv.writer(output_file, lineterminator='\n')
+
+    for i, distance_min_sentence in enumerate(zip(distance_min_list, sentence_list)):
+        writer.writerow([day, i, '', distance_min_sentence[1]])
+
+        sliced = sorted(distance_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
+
+        for distance_index in sliced:
+            keep = flat_k_list[distance_index[0]]
+            k_position, k_day = get_keep_day(k_list, keep)
+            print('Keep Day:{} Keep Position:{}'.format(k_day, k_position))
+            print('Keep:{}'.format(keep))
+            print('Sentence Day:{} Sentence Position:{}'.format(day, i))
+            print('Sentence:{}'.format(distance_min_sentence[1]))
+            print('Distance:{}'.format(distance_index[1]))
+            print('')
+
+            writer.writerow([k_day, k_position, distance_index[1], keep])
+
+        print('***********************')
+
+    output_file.close()
+
+
 def output_results(student, flat_k_list, k_list, day, average_min_list, distance_min_list, sentence_list, rank):
     print(student)
+
     for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list)):
         sliced = sorted(average_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
 
