@@ -36,6 +36,7 @@ def main():
                 #     sent_list[1]
                 # )
 
+                # TODO テスト用
                 output_results(
                     student_number,
                     flat_k_list,
@@ -152,7 +153,7 @@ def get_ten_words(sentence_list):
 
 def get_keep_day(keep_list, target_sentence):
     for keep_obj in keep_list:
-        for i, keep in enumerate(keep_obj['keep']):
+        for i, keep in enumerate(keep_obj['keep'], 1):
             if keep == target_sentence:
                 return i, keep_obj['day']
 
@@ -197,8 +198,7 @@ def output_file_results(student, flat_k_list, k_list, day, average_min_list, dis
     output_file = open('2017/output/{}/{}_ave.csv'.format(student, flag), 'a')
     writer = csv.writer(output_file, lineterminator='\n')
 
-
-    for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list)):
+    for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list), 1):
         writer.writerow([day, i, '', average_min_sentence[1]])
 
         sliced = sorted(average_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
@@ -223,7 +223,7 @@ def output_file_results(student, flat_k_list, k_list, day, average_min_list, dis
     output_file = open('2017/output/{}/{}_min.csv'.format(student, flag), 'a')
     writer = csv.writer(output_file, lineterminator='\n')
 
-    for i, distance_min_sentence in enumerate(zip(distance_min_list, sentence_list)):
+    for i, distance_min_sentence in enumerate(zip(distance_min_list, sentence_list), 1):
         writer.writerow([day, i, '', distance_min_sentence[1]])
 
         sliced = sorted(distance_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
@@ -248,7 +248,7 @@ def output_file_results(student, flat_k_list, k_list, day, average_min_list, dis
 def output_results(student, flat_k_list, k_list, day, average_min_list, distance_min_list, sentence_list, rank):
     print(student)
 
-    for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list)):
+    for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list), 1):
         sliced = sorted(average_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
 
         for distance_index in sliced:
@@ -265,7 +265,7 @@ def output_results(student, flat_k_list, k_list, day, average_min_list, distance
 
     print('-------------------------------------')
 
-    for i, distance_min_sentence in enumerate(zip(distance_min_list, sentence_list)):
+    for i, distance_min_sentence in enumerate(zip(distance_min_list, sentence_list), 1):
         sliced = sorted(distance_min_sentence[0].items(), key=lambda x: x[1])[0:rank]
 
         for distance_index in sliced:
