@@ -64,8 +64,8 @@ def main():
         for target_group in sorted(target_group_list, key=lambda x: str2date(x['target_day'], year)):
             writer.writerow([target_group['target_sentence'], target_group['target_day'], '未解決', '', '', 'FALSE'])
 
-            for abc in target_group['keep']:
-                writer.writerow(['', '', '', abc['sentence'], abc['day']])
+            for keep in target_group['keep']:
+                writer.writerow(['', '', '', keep['sentence'], keep['day']])
 
         ave_file.close()
         min_file.close()
