@@ -69,7 +69,7 @@ def main():
 
         ave_file.close()
         min_file.close()
-        output_file.close()a
+        output_file.close()
 
 
 def merge_keep(k_ave_list, k_min_list):
