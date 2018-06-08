@@ -23,11 +23,13 @@ def main():
     del worksheets[0]
     columns = [chr(i) for i in range(67,67+22)]
 
-    output_json_file = open('2018/前期.json', 'a')
+    output_json_file = open('2018/前期.json', 'w')
     output_json_dict = {}
 
+    total = len(worksheets) * len(columns)
+    current = 0
+
     for worksheet in worksheets:
-        print(worksheet.title)
         time.sleep(1.3)
 
         day_dict = {}
@@ -35,7 +37,6 @@ def main():
             kpt = {}
             day = ''
 
-            print(column)
             time.sleep(1.3)
             one_day_cells = worksheet.range('{}2:{}5'.format(column, column))
 
@@ -48,6 +49,9 @@ def main():
                 kpt[kptcell[1]] = list(filter(lambda x: x != '', splited))
 
             day_dict[day] = kpt
+
+            current += 1
+            print('{}/{}'.format(current, total))
 
         output_json_dict[worksheet.title] = day_dict
 
