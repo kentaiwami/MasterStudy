@@ -14,7 +14,7 @@ def main():
             # TODO テスト用
             # day = '6月16日'
 
-            date = datetime.datetime.strptime('2017年'+day, "%Y年%m月%d日")
+            date = datetime.datetime.strptime('2018年'+day, "%Y年%m月%d日")
             p_list = data[student_number][day]['P']
             t_list = data[student_number][day]['T']
             k_list = get_keep(student_number, date)
@@ -24,20 +24,7 @@ def main():
                 results_average_min, results_distance_min = convert_dict_list(results_average_min, results_distance_min)
                 flat_k_list = convert_keep_flat(k_list)
 
-                # output_file_results(
-                #     student_number,
-                #     flat_k_list,
-                #     k_list,
-                #     day,
-                #     results_average_min,
-                #     results_distance_min,
-                #     sent_list[0],
-                #     3,
-                #     sent_list[1]
-                # )
-
-                # TODO テスト用
-                output_results(
+                output_file_results(
                     student_number,
                     flat_k_list,
                     k_list,
@@ -45,8 +32,21 @@ def main():
                     results_average_min,
                     results_distance_min,
                     sent_list[0],
-                    3
+                    3,
+                    sent_list[1]
                 )
+
+                # TODO テスト用
+                # output_results(
+                #     student_number,
+                #     flat_k_list,
+                #     k_list,
+                #     day,
+                #     results_average_min,
+                #     results_distance_min,
+                #     sent_list[0],
+                #     3
+                # )
 
         # break
 
@@ -87,7 +87,7 @@ def get_keep(student_number, pt_date):
     results = []
 
     for day in data[student_number].keys():
-        k_date = datetime.datetime.strptime('2017年' + day, "%Y年%m月%d日")
+        k_date = datetime.datetime.strptime('2018年' + day, "%Y年%m月%d日")
 
         if k_date < pt_date:
             continue
@@ -98,7 +98,7 @@ def get_keep(student_number, pt_date):
 
 
 def get_stopwords():
-    stopword_f = open('2017/stopwords.txt', 'r')
+    stopword_f = open('2018/stopwords.txt', 'r')
     stopwords = stopword_f.readlines()
     stopword_f.close()
     stopwords = [x.replace('\n', '') for x in stopwords]
@@ -195,7 +195,7 @@ def convert_keep_flat(k_list):
 def output_file_results(student, flat_k_list, k_list, day, average_min_list, distance_min_list, sentence_list, rank, flag):
     print(student)
 
-    output_file = open('2017/output/{}/{}_ave.csv'.format(student, flag), 'a')
+    output_file = open('2018/output/{}/{}_ave.csv'.format(student, flag), 'a')
     writer = csv.writer(output_file, lineterminator='\n')
 
     for i, average_min_sentence in enumerate(zip(average_min_list, sentence_list), 1):
@@ -220,7 +220,7 @@ def output_file_results(student, flat_k_list, k_list, day, average_min_list, dis
     print('-------------------------------------')
     output_file.close()
 
-    output_file = open('2017/output/{}/{}_min.csv'.format(student, flag), 'a')
+    output_file = open('2018/output/{}/{}_min.csv'.format(student, flag), 'a')
     writer = csv.writer(output_file, lineterminator='\n')
 
     for i, distance_min_sentence in enumerate(zip(distance_min_list, sentence_list), 1):
@@ -282,7 +282,7 @@ def output_results(student, flat_k_list, k_list, day, average_min_list, distance
 
 
 if __name__ == '__main__':
-    file = open("2017/前期.json")
+    file = open("2018/前期.json")
     data = json.load(file)
 
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
