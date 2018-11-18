@@ -8,20 +8,21 @@ import MeCab
 
 
 def main():
-    documents = [x['wakachi'] for x in get_documents()]
+    documents = get_documents()
+    wakachi_documents = [x['wakachi'] for x in documents]
 
     # gensim用に成形
-    texts = list(map(lambda x: x.split(), documents))
+    texts = list(map(lambda x: x.split(), wakachi_documents))
 
     # 単語->id変換の辞書作成
     dictionary = corpora.Dictionary(texts)
     print('===単語->idの変換辞書===')
-    pprint(dictionary.token2id)
+    # pprint(dictionary.token2id)
 
     # textsをcorpus化
     corpus = list(map(dictionary.doc2bow, texts))
     print('===corpus化されたtexts===')
-    pprint(corpus)
+    # pprint(corpus)
 
     # tfidf modelの生成
     test_model = models.TfidfModel(corpus, wglobal=new_idf, normalize=False)
@@ -38,8 +39,18 @@ def main():
 
     # 表示
     print('===結果表示===')
-    for text in texts_tfidf:
-        print(text)
+    for i, text in enumerate(texts_tfidf):
+        tfidf_sum = 0.0
+
+        for word_tfidf in text:
+            tfidf_sum += word_tfidf[1]
+
+        print()
+
+        documents[i]['tfidf_sum'] = tfidf_sum
+        documents[i]['tfidf_ave'] = tfidf_sum / len(text)
+
+        print(documents[i])
 
 
 def new_idf(docfreq, totaldocs, log_base=2.0, add=1.0):
