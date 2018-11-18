@@ -7,7 +7,7 @@ import time
 
 def get_worksheet_list(doc_id):
     scope = ['https://spreadsheets.google.com/feeds']
-    path = os.path.expanduser("key.json")
+    path = os.path.expanduser("../key.json")
 
     credentials = ServiceAccountCredentials.from_json_keyfile_name(path, scope)
     client = gspread.authorize(credentials)
@@ -19,11 +19,13 @@ def get_worksheet_list(doc_id):
 
 def main():
     # 2018
-    worksheets = get_worksheet_list('1-Qe_9u3qfniQm61f2QTyH8yP73RFiIz_dJXv7HdhDNM')
+    # worksheets = get_worksheet_list('1-Qe_9u3qfniQm61f2QTyH8yP73RFiIz_dJXv7HdhDNM') # 前期
+    worksheets = get_worksheet_list('1yLWQy725k1uH_3oX5DrNrZO2CqwYz6QGqVHWjHGa4ek') # 後期
+
     del worksheets[0]
     columns = [chr(i) for i in range(67,67+22)]
 
-    output_json_file = open('2018/前期.json', 'w')
+    output_json_file = open('../2018/後期.json', 'w')
     output_json_dict = {}
 
     total = len(worksheets) * len(columns)
