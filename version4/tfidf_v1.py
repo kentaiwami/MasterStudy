@@ -2,13 +2,13 @@ from gensim import corpora
 from gensim import models
 from pprint import pprint
 import math
+import json
+import datetime
+import MeCab
+
 
 def main():
-    documents = ['a b c d',
-                 'c b c d a',
-                 'b b a',
-                 'c c',
-                 'c b a a a a a a a a d']
+    documents = get_documents()
 
     # gensim用に成形
     texts = list(map(lambda x: x.split(), documents))
@@ -46,5 +46,41 @@ def new_idf(docfreq, totaldocs, log_base=2.0, add=1.0):
     return add + math.log(1.0 * totaldocs / docfreq, log_base)
 
 
+def get_stopwords():
+    stopword_f = open('../2018/stopwords.txt', 'r')
+    stopwords = stopword_f.readlines()
+    stopword_f.close()
+    stopwords = [x.replace('\n', '') for x in stopwords]
+
+    return stopwords
+
+
+def get_wakachi(sentence):
+    stopwords = get_stopwords()
+    sentence_list = mecab.parse(sentence).replace(' \n', '').split()
+    wakachi_list = [x for x in sentence_list if x not in stopwords]
+
+    return wakachi_list
+
+
+def get_documents():
+    documents = []
+    file = open("../2018/後期.json")
+    data = json.load(file)
+
+    for student_number in data.keys():
+        for day in data[student_number].keys():
+            date = datetime.datetime.strptime('2018年' + day, "%Y年%m月%d日")
+            documents += [{'text': get_wakachi(keep_sentence), 'student': student_number, 'date': str(date.date())} for keep_sentence in data[student_number][day]['K']]
+            documents += [{'text': get_wakachi(problem_sentence), 'student': student_number, 'date': str(date.date())} for problem_sentence in data[student_number][day]['P']]
+            documents += [{'text': get_wakachi(try_sentence), 'student': student_number, 'date': str(date.date())} for try_sentence in data[student_number][day]['T']]
+
+    return documents
+
+
 if __name__ == '__main__':
-    main()
+    mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
+    # main()
+    # get_documents()
+    for hoge in get_documents():
+        print(hoge)
