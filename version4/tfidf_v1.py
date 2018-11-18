@@ -1,10 +1,10 @@
 from gensim import corpora
 from gensim import models
-from pprint import pprint
 import math
 import json
 import datetime
 import MeCab
+import csv
 
 
 def main():
@@ -40,17 +40,32 @@ def main():
     # 表示
     print('===結果表示===')
     for i, text in enumerate(texts_tfidf):
-        tfidf_sum = 0.0
+        tfidf_list = [word_tfidf[1] for word_tfidf in text]
 
-        for word_tfidf in text:
-            tfidf_sum += word_tfidf[1]
-
-        print()
-
-        documents[i]['tfidf_sum'] = tfidf_sum
-        documents[i]['tfidf_ave'] = tfidf_sum / len(text)
+        documents[i]['sum'] = sum(tfidf_list)
+        documents[i]['ave'] = sum(tfidf_list) / len(text)
+        documents[i]['min'] = min(tfidf_list)
+        documents[i]['max'] = max(tfidf_list)
 
         print(documents[i])
+
+
+    # ===csvへ出力===
+    output_csv(documents)
+
+
+def output_csv(documents):
+    # sum, ave, min, max
+    mode = 'max'
+
+    file = open('../2018/tfidf_output/output_{}.csv'.format(mode), 'a')
+    writer = csv.writer(file, lineterminator='\n')
+    documents.sort(key=lambda x: x[mode], reverse=True)
+    writer.writerow(['student', 'date', 'origin', mode])
+
+    for document in documents:
+        writer.writerow([document['student'], document['date'], document['origin'], document[mode]])
+    file.close()
 
 
 def new_idf(docfreq, totaldocs, log_base=2.0, add=1.0):
@@ -86,7 +101,6 @@ def get_documents():
             documents += [{'wakachi': get_wakachi(problem_sentence), 'origin': problem_sentence, 'student': student_number, 'date': str(date.date())} for problem_sentence in data[student_number][day]['P']]
             documents += [{'wakachi': get_wakachi(try_sentence), 'origin': try_sentence, 'student': student_number, 'date': str(date.date())} for try_sentence in data[student_number][day]['T']]
 
-
     print(documents)
     return documents
 
@@ -94,4 +108,3 @@ def get_documents():
 if __name__ == '__main__':
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     main()
-    # get_documents()
