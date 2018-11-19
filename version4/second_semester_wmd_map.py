@@ -1,6 +1,7 @@
 import MeCab
 from gensim.models import KeyedVectors
 import json
+import csv
 
 
 def main():
@@ -26,6 +27,7 @@ def main():
     距離を計算してマッピングをする
     """
     for document in all_documents:
+        print('{}/{}'.format(document['id']+1, len(all_documents)))
         distances = []
         other_documents = [x for x in all_documents if x['id'] != document['id']]
 
@@ -53,8 +55,6 @@ def main():
         else:
             mapping[document['id']] = ids
 
-        break
-
 
     """
     マッピングされていないもの（その人しか記述していない内容）と
@@ -70,7 +70,37 @@ def main():
     not_mapping_ids = [x for x in range(document_id) if x not in mapping_ids]
 
     # より多くマッピングされている順にソート
-    sorted_many_mapping_documents = sorted(mapping.items(), key=lambda x: len(x[1]), reverse=True)
+    sorted_many_mapping = sorted(mapping.items(), key=lambda x: len(x[1]), reverse=True)
+
+
+    """
+    結果出力
+    """
+    output_csv(not_mapping_ids, sorted_many_mapping, all_documents)
+
+
+
+def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
+    rare_file = open('../2018/wmd_map_output/rare.csv', 'w')
+    many_file = open('../2018/wmd_map_output/many.csv', 'w')
+
+    writer = csv.writer(rare_file, lineterminator='\n')
+    writer.writerow(['student', 'date', 'origin', 'KPT'])
+
+    for not_mapping_id in not_mapping_ids:
+        doc = all_documents[not_mapping_id]
+        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['KPT']])
+
+
+    writer = csv.writer(many_file, lineterminator='\n')
+    writer.writerow(['student', 'date', 'origin', 'KPT'])
+
+    for many_mapping in sorted_many_mapping:
+        doc = all_documents[many_mapping[0]]
+        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['KPT']])
+
+    many_file.close()
+    rare_file.close()
 
 
 def calc_distance(target_sentence, sentence):
