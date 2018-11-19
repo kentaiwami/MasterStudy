@@ -47,13 +47,8 @@ def main():
         higher_all_distances = sorted(distances, key=lambda x: x['all'])[:3]
         higher_ave_distances = sorted(distances, key=lambda x: x['ave'])[:3]
 
-        # 平均値の最小値と全ての最小値から重複除去
-        ids = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
-
-        if document['id'] in mapping.keys():
-            mapping[document['id']] = list(set(mapping[document['id']] + ids))
-        else:
-            mapping[document['id']] = ids
+        # 平均値の最小値と全ての最小値から重複除去して記録
+        mapping[document['id']] = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
 
 
     """
