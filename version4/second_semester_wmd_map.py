@@ -8,6 +8,7 @@ def main():
     file = open("../2018/後期.json")
     data = json.load(file)
     all_documents = []
+    mapping = {}
 
     for student_number in data.keys():
         print(student_number)
@@ -17,7 +18,27 @@ def main():
             all_documents += add_document(data[student_number][day]['P'], student_number, day, 'P')
             all_documents += add_document(data[student_number][day]['T'], student_number, day, 'T')
 
+    for document in all_documents:
+        distances = []
+        other_documents = [x for x in all_documents if x['id'] != document['id']]
 
+        for other_document in other_documents:
+            # documentとother_documentで距離計算
+            # distancesに計算した距離とidを辞書にして入れていく
+            pass
+
+        # distancesをソートして上位3件までスライス
+        # documentのidをmappingから探す。
+            # keyがなければ、新たにdistancesにあるidを入れていく
+            # keyがあれば、valueにdistancesにあるidを追加して上書きしていく
+
+
+    # この時点でmappingが完了
+    # range(0, document_id)でforを回していき、mapping内にkeyがないものを抽出
+    # この時点で「その人しか記述していないような内容」を抽出できる。
+
+    # mappingの中身をvalueに格納されたidの個数で降順にソート
+    # この時点で、「みんなが書いているような内容」を抽出できる。
 
 def add_document(kpt_list, student_number, day, kpt):
     global document_id
