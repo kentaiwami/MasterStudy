@@ -20,7 +20,7 @@ def get_worksheet_list(doc_id):
 def main():
     # 2018
     # worksheets = get_worksheet_list('1-Qe_9u3qfniQm61f2QTyH8yP73RFiIz_dJXv7HdhDNM') # 前期
-    worksheets = get_worksheet_list('1yLWQy725k1uH_3oX5DrNrZO2CqwYz6QGqVHWjHGa4ek') # 後期
+    worksheets = get_worksheet_list('1i-oYPNv6JCRGc-Pf4rg5ZXE_FsQUAobhxLXzTLxlZXU') # 後期
 
     del worksheets[0]
     columns = [chr(i) for i in range(67,67+22)]

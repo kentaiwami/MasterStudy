@@ -58,7 +58,7 @@ def output_csv(documents):
     # sum, ave, min, max
     mode = 'max'
 
-    file = open('../2018/tfidf_output/output_{}.csv'.format(mode), 'a')
+    file = open('../2018/tfidf_output/output_{}.csv'.format(mode), 'w')
     writer = csv.writer(file, lineterminator='\n')
     documents.sort(key=lambda x: x[mode], reverse=True)
     writer.writerow(['student', 'date', 'origin', mode])
