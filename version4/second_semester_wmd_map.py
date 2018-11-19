@@ -27,11 +27,13 @@ def main():
     距離を計算してマッピングをする
     """
     for document in all_documents:
-        print('{}/{}'.format(document['id']+1, len(all_documents)))
         distances = []
         other_documents = [x for x in all_documents if x['id'] != document['id']]
 
-        for other_document in other_documents:
+        for i, other_document in enumerate(other_documents):
+            print('{}/{}'.format(document['id'] + 1, len(all_documents)))
+            print('{}/{}'.format(i, len(other_documents)))
+            print()
             distance_result = calc_distance(document['origin'], other_document['origin'])
             distances.append({
                 'all': distance_result['all'],
