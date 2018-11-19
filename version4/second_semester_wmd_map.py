@@ -90,11 +90,11 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
 
 
     writer = csv.writer(many_file, lineterminator='\n')
-    writer.writerow(['student', 'date', 'origin', 'KPT'])
+    writer.writerow(['student', 'date', 'origin', 'count', 'KPT'])
 
     for many_mapping in sorted_many_mapping:
         doc = all_documents[many_mapping[0]]
-        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['KPT']])
+        writer.writerow([doc['student'], doc['day'], doc['origin'], len(many_mapping[1]), doc['KPT']])
 
     many_file.close()
     rare_file.close()
