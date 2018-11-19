@@ -2,31 +2,21 @@ import MeCab
 from gensim.models import KeyedVectors
 import json
 import csv
+import multiprocessing as mp
 
 
-def main():
-    global document_id
-    file = open("../2018/後期.json")
-    data = json.load(file)
-    all_documents = []
-    mapping = {}
-
-    """
-    全学生のドキュメントをjsonファイルから読み込んで変数に格納
-    """
-    for student_number in data.keys():
-        print(student_number)
-        for day in data[student_number].keys():
-
-            all_documents += add_document(data[student_number][day]['K'], student_number, day, 'K')
-            all_documents += add_document(data[student_number][day]['P'], student_number, day, 'P')
-            all_documents += add_document(data[student_number][day]['T'], student_number, day, 'T')
+def wrap_subcalc(args):
+    return subcalc(*args)
 
 
-    """
-    距離を計算してマッピングをする
-    """
-    for document in all_documents:
+def subcalc(p, all_documents):
+    sub_mapping = {}
+    start = int(len(all_documents) * p / proc)
+    end = int(len(all_documents) * (p + 1) / proc)
+
+    for document in all_documents[start:end]:
+        print('{}/{}'.format(document['id'] + 1, all_documents[-1]['id']))
+
         distances = []
         other_documents = [x for x in all_documents if x['id'] != document['id']]
 
@@ -50,7 +40,39 @@ def main():
         higher_ave_distances = sorted(distances, key=lambda x: x['ave'])[:3]
 
         # 平均値の最小値と全ての最小値から重複除去して記録
-        mapping[document['id']] = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
+        sub_mapping[document['id']] = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
+
+    return sub_mapping
+
+
+def main():
+    global document_id
+    file = open("../2018/後期.json")
+    data = json.load(file)
+    all_documents = []
+
+    """
+    全学生のドキュメントをjsonファイルから読み込んで変数に格納
+    """
+    for student_number in data.keys():
+        print(student_number)
+        for day in data[student_number].keys():
+
+            all_documents += add_document(data[student_number][day]['K'], student_number, day, 'K')
+            all_documents += add_document(data[student_number][day]['P'], student_number, day, 'P')
+            all_documents += add_document(data[student_number][day]['T'], student_number, day, 'T')
+
+
+    """
+    距離を計算してマッピングをする
+    """
+    pool = mp.Pool(proc)
+    args = [(0, all_documents), (1, all_documents)]
+    callback = pool.map(wrap_subcalc, args)
+    pool.close()
+
+    # 結果をマージ
+    mapping = {**callback[0], **callback[1]}
 
 
     """
@@ -167,6 +189,7 @@ def add_document(kpt_list, student_number, day, kpt):
 
 
 if __name__ == '__main__':
+    proc = 2
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     word2vec_model = KeyedVectors.load_word2vec_format('../model/tohoku/model.bin', binary=True)
