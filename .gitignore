@@ -99,4 +99,10 @@ ENV/
 
 # mypy
 .mypy_cache/
-
+.idea/
+~$*.xlsx
+all_student_wakachi
+model
+*.bz2
+2017/
+2018/
