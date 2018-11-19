@@ -53,12 +53,24 @@ def main():
         else:
             mapping[document['id']] = ids
 
-    # この時点でmappingが完了
-    # range(0, document_id)でforを回していき、mapping内にkeyがないものを抽出
-    # この時点で「その人しか記述していないような内容」を抽出できる。
+        break
 
-    # mappingの中身をvalueに格納されたidの個数で降順にソート
-    # この時点で、「みんなが書いているような内容」を抽出できる。
+
+    """
+    マッピングされていないもの（その人しか記述していない内容）と
+    たくさんマッピングされているもの（みんなが書いている内容）を抽出する
+    """
+    mapping_ids = []
+    for key in mapping:
+        mapping_ids += mapping[key]
+
+    mapping_ids = list(set(mapping_ids))
+
+    # マッピングされていないidを抽出
+    not_mapping_ids = [x for x in range(document_id) if x not in mapping_ids]
+
+    # より多くマッピングされている順にソート
+    sorted_many_mapping_documents = sorted(mapping.items(), key=lambda x: len(x[1]), reverse=True)
 
 
 def calc_distance(target_sentence, sentence):
@@ -131,4 +143,4 @@ if __name__ == '__main__':
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     word2vec_model = KeyedVectors.load_word2vec_format('../model/tohoku/model.bin', binary=True)
-    # main()
+    main()
