@@ -2,6 +2,28 @@ import MeCab
 from gensim.models import KeyedVectors
 import json
 import csv
+import multiprocessing as mp
+
+
+def wrap_subcalc(args):
+    return subcalc(*args)
+
+
+def subcalc(p, document, other_documents):
+    distances = []
+
+    start = int(len(other_documents) * p / proc)
+    end = int(len(other_documents) * (p + 1) / proc)
+
+    for i, other_document in enumerate(other_documents[start:end]):
+        distance_result = calc_distance(document['origin'], other_document['origin'])
+        distances.append({
+            'all': distance_result['all'],
+            'ave': distance_result['ave'],
+            'id': other_document['id']
+        })
+
+    return distances
 
 
 def main():
@@ -27,19 +49,32 @@ def main():
     距離を計算してマッピングをする
     """
     for document in all_documents:
+        print('{}/{}'.format(document['id'] + 1, all_documents[-1]['id']))
+
         distances = []
         other_documents = [x for x in all_documents if x['id'] != document['id']]
 
-        for i, other_document in enumerate(other_documents):
-            print('{}/{}'.format(document['id'] + 1, len(all_documents)))
-            print('{}/{}'.format(i, len(other_documents)))
-            print()
-            distance_result = calc_distance(document['origin'], other_document['origin'])
-            distances.append({
-                'all': distance_result['all'],
-                'ave': distance_result['ave'],
-                'id': other_document['id']
-            })
+        pool = mp.Pool(proc)
+        args = [(0, document, other_documents), (1, document, other_documents)]
+        callback = pool.map(wrap_subcalc, args)
+
+        pool.close()
+
+        # callbackを1次元配列へまとめる
+        for distances_results_list in callback:
+            for distance in distances_results_list:
+                distances.append(distance)
+
+        # for i, other_document in enumerate(other_documents):
+        #     print('{}/{}'.format(document['id'] + 1, len(all_documents)))
+        #     print('{}/{}'.format(i, len(other_documents)))
+        #     print()
+        #     distance_result = calc_distance(document['origin'], other_document['origin'])
+        #     distances.append({
+        #         'all': distance_result['all'],
+        #         'ave': distance_result['ave'],
+        #         'id': other_document['id']
+        #     })
 
 
         """
@@ -73,13 +108,13 @@ def main():
     """
     結果出力
     """
-    output_csv(not_mapping_ids, sorted_many_mapping, all_documents)
+    # output_csv(not_mapping_ids, sorted_many_mapping, all_documents)
 
 
 
 def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
-    rare_file = open('../2018/wmd_map_output/rare.csv', 'w')
-    many_file = open('../2018/wmd_map_output/many.csv', 'w')
+    rare_file = open('../2018/wmd_map_output/test_rare.csv', 'w')
+    many_file = open('../2018/wmd_map_output/test_many.csv', 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'KPT'])
@@ -167,6 +202,7 @@ def add_document(kpt_list, student_number, day, kpt):
 
 
 if __name__ == '__main__':
+    proc = 2
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     word2vec_model = KeyedVectors.load_word2vec_format('../model/tohoku/model.bin', binary=True)
