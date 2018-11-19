@@ -10,6 +10,9 @@ def main():
     all_documents = []
     mapping = {}
 
+    """
+    全学生のドキュメントをjsonファイルから読み込んで変数に格納
+    """
     for student_number in data.keys():
         print(student_number)
         for day in data[student_number].keys():
@@ -18,23 +21,37 @@ def main():
             all_documents += add_document(data[student_number][day]['P'], student_number, day, 'P')
             all_documents += add_document(data[student_number][day]['T'], student_number, day, 'T')
 
+
+    """
+    距離を計算してマッピングをする
+    """
     for document in all_documents:
         distances = []
         other_documents = [x for x in all_documents if x['id'] != document['id']]
 
         for other_document in other_documents:
-            print(other_document, document)
+            distance_result = calc_distance(document['origin'], other_document['origin'])
+            distances.append({
+                'all': distance_result['all'],
+                'ave': distance_result['ave'],
+                'id': other_document['id']
+            })
 
-            # documentとother_documentで距離計算
-            # distancesに計算した距離とidを辞書にして入れていく
-            break
-        break
 
-        # distancesをソートして上位3件までスライス
-        # documentのidをmappingから探す。
-            # keyがなければ、新たにdistancesにあるidを入れていく
-            # keyがあれば、valueにdistancesにあるidを追加して上書きしていく
+        """
+        マッピング
+        """
+        # 上位3件をピックアップ
+        higher_all_distances = sorted(distances, key=lambda x: x['all'])[:3]
+        higher_ave_distances = sorted(distances, key=lambda x: x['ave'])[:3]
 
+        # 平均値の最小値と全ての最小値から重複除去
+        ids = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
+
+        if document['id'] in mapping.keys():
+            mapping[document['id']] = list(set(mapping[document['id']] + ids))
+        else:
+            mapping[document['id']] = ids
 
     # この時点でmappingが完了
     # range(0, document_id)でforを回していき、mapping内にkeyがないものを抽出
@@ -65,7 +82,7 @@ def calc_distance(target_sentence, sentence):
 
         ave_distances.append(sum(tmp_distances) / len(tmp_distances))
 
-    return min(all_distances), min(ave_distances)
+    return {'all': min(all_distances), 'ave': min(ave_distances)}
 
 
 def get_stopwords():
