@@ -9,21 +9,40 @@ def wrap_subcalc(args):
     return subcalc(*args)
 
 
-def subcalc(p, document, other_documents):
-    distances = []
+def subcalc(p, all_documents):
+    sub_mapping = {}
+    start = int(len(all_documents) * p / proc)
+    end = int(len(all_documents) * (p + 1) / proc)
 
-    start = int(len(other_documents) * p / proc)
-    end = int(len(other_documents) * (p + 1) / proc)
+    for document in all_documents[start:end]:
+        print('{}/{}'.format(document['id'] + 1, all_documents[-1]['id']))
 
-    for i, other_document in enumerate(other_documents[start:end]):
-        distance_result = calc_distance(document['origin'], other_document['origin'])
-        distances.append({
-            'all': distance_result['all'],
-            'ave': distance_result['ave'],
-            'id': other_document['id']
-        })
+        distances = []
+        other_documents = [x for x in all_documents if x['id'] != document['id']]
 
-    return distances
+        for i, other_document in enumerate(other_documents):
+            print('{}/{}'.format(document['id'] + 1, len(all_documents)))
+            print('{}/{}'.format(i, len(other_documents)))
+            print()
+            distance_result = calc_distance(document['origin'], other_document['origin'])
+            distances.append({
+                'all': distance_result['all'],
+                'ave': distance_result['ave'],
+                'id': other_document['id']
+            })
+
+
+        """
+        マッピング
+        """
+        # 上位3件をピックアップ
+        higher_all_distances = sorted(distances, key=lambda x: x['all'])[:3]
+        higher_ave_distances = sorted(distances, key=lambda x: x['ave'])[:3]
+
+        # 平均値の最小値と全ての最小値から重複除去して記録
+        sub_mapping[document['id']] = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
+
+    return sub_mapping
 
 
 def main():
@@ -31,7 +50,6 @@ def main():
     file = open("../2018/後期.json")
     data = json.load(file)
     all_documents = []
-    mapping = {}
 
     """
     全学生のドキュメントをjsonファイルから読み込んで変数に格納
@@ -48,44 +66,13 @@ def main():
     """
     距離を計算してマッピングをする
     """
-    for document in all_documents:
-        print('{}/{}'.format(document['id'] + 1, all_documents[-1]['id']))
+    pool = mp.Pool(proc)
+    args = [(0, all_documents), (1, all_documents)]
+    callback = pool.map(wrap_subcalc, args)
+    pool.close()
 
-        distances = []
-        other_documents = [x for x in all_documents if x['id'] != document['id']]
-
-        pool = mp.Pool(proc)
-        args = [(0, document, other_documents), (1, document, other_documents)]
-        callback = pool.map(wrap_subcalc, args)
-
-        pool.close()
-
-        # callbackを1次元配列へまとめる
-        for distances_results_list in callback:
-            for distance in distances_results_list:
-                distances.append(distance)
-
-        # for i, other_document in enumerate(other_documents):
-        #     print('{}/{}'.format(document['id'] + 1, len(all_documents)))
-        #     print('{}/{}'.format(i, len(other_documents)))
-        #     print()
-        #     distance_result = calc_distance(document['origin'], other_document['origin'])
-        #     distances.append({
-        #         'all': distance_result['all'],
-        #         'ave': distance_result['ave'],
-        #         'id': other_document['id']
-        #     })
-
-
-        """
-        マッピング
-        """
-        # 上位3件をピックアップ
-        higher_all_distances = sorted(distances, key=lambda x: x['all'])[:3]
-        higher_ave_distances = sorted(distances, key=lambda x: x['ave'])[:3]
-
-        # 平均値の最小値と全ての最小値から重複除去して記録
-        mapping[document['id']] = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
+    # 結果をマージ
+    mapping = {**callback[0], **callback[1]}
 
 
     """
@@ -108,13 +95,13 @@ def main():
     """
     結果出力
     """
-    # output_csv(not_mapping_ids, sorted_many_mapping, all_documents)
+    output_csv(not_mapping_ids, sorted_many_mapping, all_documents)
 
 
 
 def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
-    rare_file = open('../2018/wmd_map_output/test_rare.csv', 'w')
-    many_file = open('../2018/wmd_map_output/test_many.csv', 'w')
+    rare_file = open('../2018/wmd_map_output/rare.csv', 'w')
+    many_file = open('../2018/wmd_map_output/many.csv', 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'KPT'])
