@@ -3,6 +3,7 @@ from gensim.models import KeyedVectors
 import json
 import csv
 import multiprocessing as mp
+import time
 
 
 def wrap_subcalc(args):
@@ -11,19 +12,19 @@ def wrap_subcalc(args):
 
 def subcalc(p, all_documents):
     sub_mapping = {}
-    start = int(len(all_documents) * p / proc)
-    end = int(len(all_documents) * (p + 1) / proc)
+    s = int(len(all_documents) * p / proc)
+    e = int(len(all_documents) * (p + 1) / proc)
+    sliced = all_documents[s:e]
+    total = len(sliced)
 
-    for document in all_documents[start:end]:
-        print('{}/{}'.format(document['id'] + 1, all_documents[-1]['id']))
+
+    for i, document in enumerate(sliced, start=1):
+        print('{}: {}%'.format(process[p], int(i/total*100)))
 
         distances = []
         other_documents = [x for x in all_documents if x['id'] != document['id']]
 
-        for i, other_document in enumerate(other_documents):
-            print('{}/{}'.format(document['id'] + 1, len(all_documents)))
-            print('{}/{}'.format(i, len(other_documents)))
-            print()
+        for other_document in other_documents:
             distance_result = calc_distance(document['origin'], other_document['origin'])
             distances.append({
                 'all': distance_result['all'],
@@ -67,7 +68,7 @@ def main():
     距離を計算してマッピングをする
     """
     pool = mp.Pool(proc)
-    args = [(0, all_documents), (1, all_documents)]
+    args = [(i, all_documents) for i in range(proc)]
     callback = pool.map(wrap_subcalc, args)
     pool.close()
 
@@ -189,8 +190,15 @@ def add_document(kpt_list, student_number, day, kpt):
 
 
 if __name__ == '__main__':
-    proc = 2
+    proc = 16
+    process = [chr(i) for i in range(65, 65 + 26)]
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     word2vec_model = KeyedVectors.load_word2vec_format('../model/tohoku/model.bin', binary=True)
+
+    start = time.time()
+
     main()
+
+    elapsed_time = time.time() - start
+    print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
