@@ -107,19 +107,19 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
     many_file = open('../2018/wmd_map_output/many.csv', 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
-    writer.writerow(['student', 'date', 'origin', 'KPT'])
+    writer.writerow(['student', 'date', 'origin', 'id', 'KPT'])
 
     for not_mapping_id in not_mapping_ids:
         doc = all_documents[not_mapping_id]
-        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['KPT']])
+        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['id'], doc['KPT']])
 
 
     writer = csv.writer(many_file, lineterminator='\n')
-    writer.writerow(['student', 'date', 'origin', 'count', 'KPT'])
+    writer.writerow(['student', 'date', 'origin', 'id', 'count', 'KPT'])
 
     for many_mapping in sorted_many_mapping:
         doc = all_documents[many_mapping[0]]
-        writer.writerow([doc['student'], doc['day'], doc['origin'], len(many_mapping[1]), doc['KPT']])
+        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['id'], len(many_mapping[1]), doc['KPT']])
 
     many_file.close()
     rare_file.close()
