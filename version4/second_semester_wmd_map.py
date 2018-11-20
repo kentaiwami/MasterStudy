@@ -69,11 +69,13 @@ def main():
     """
     pool = mp.Pool(proc)
     args = [(i, all_documents) for i in range(proc)]
-    callback = pool.map(wrap_subcalc, args)
+    callbacks = pool.map(wrap_subcalc, args)
     pool.close()
 
     # 結果をマージ
-    mapping = {**callback[0], **callback[1]}
+    mapping = {}
+    for callback in callbacks:
+        mapping = {**mapping, **callback}
 
 
     """
