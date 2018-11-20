@@ -36,12 +36,29 @@ def subcalc(p, all_documents):
         """
         マッピング
         """
+
+        # 距離が0（同じ文章）を先にピックアップ
+        all_zero_distances = [x for x in distances if x['all'] == 0.0]
+
+        for zero_distance in all_zero_distances:
+            distances.remove(zero_distance)
+
+        ave_zero_distances = [x for x in distances if x['ave'] == 0.0]
+
+        for zero_distance in ave_zero_distances:
+            distances.remove(zero_distance)
+
         # 上位3件をピックアップ
         higher_all_distances = sorted(distances, key=lambda x: x['all'])[:3]
         higher_ave_distances = sorted(distances, key=lambda x: x['ave'])[:3]
 
         # 平均値の最小値と全ての最小値から重複除去して記録
-        sub_mapping[document['id']] = list(set([x['id'] for x in higher_all_distances] + [x['id'] for x in higher_ave_distances]))
+        sub_mapping[document['id']] = list(set(
+            [x['id'] for x in higher_all_distances] +
+            [x['id'] for x in higher_ave_distances] +
+            [x['id'] for x in all_zero_distances] +
+            [x['id'] for x in ave_zero_distances]
+        ))
 
     return sub_mapping
 
@@ -100,6 +117,11 @@ def main():
     """
     output_csv(not_mapping_ids, sorted_many_mapping, all_documents)
 
+    # デバッグ用にマッピングの結果を出力
+    debug_file = open('../2018/wmd_map_output/debug.txt', 'w')
+    for key in mapping:
+        debug_file.write('{}: {}\n'.format(key, mapping[key]))
+    debug_file.close()
 
 
 def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
