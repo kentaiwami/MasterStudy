@@ -24,38 +24,42 @@ def subcalc(p, all_documents):
         distances = []
         other_documents = [x for x in all_documents if x['id'] != document['id']]
 
+        test_file = open('../2018/wmd_map_output/test.txt', 'a')
+
         for other_document in other_documents:
             distance_result = calc_distance(document['origin'], other_document['origin'])
+
+            if distance_result == 0.0:
+                test_file.write('{}, {}\n'.format(document['origin'], other_document['origin']))
+
             distances.append({
-                'all': distance_result['all'],
-                'ave': distance_result['ave'],
+                'dis': distance_result,
                 'id': other_document['id']
             })
 
+        test_file.close()
 
         """
         マッピング
         """
 
         # 距離が0（同じ文章）を先にピックアップ
-        all_zero_distances = [x for x in distances if x['all'] == 0.0]
+        all_zero_distances = [x for x in distances if x['dis'] == 0.0]
 
         for zero_distance in all_zero_distances:
             distances.remove(zero_distance)
 
-        ave_zero_distances = [x for x in distances if x['ave'] == 0.0]
+        ave_zero_distances = [x for x in distances if x['dis'] == 0.0]
 
         for zero_distance in ave_zero_distances:
             distances.remove(zero_distance)
 
         # 上位3件をピックアップ
-        higher_all_distances = sorted(distances, key=lambda x: x['all'])[:3]
-        higher_ave_distances = sorted(distances, key=lambda x: x['ave'])[:3]
+        higher_distances = sorted(distances, key=lambda x: x['dis'])[:3]
 
         # 平均値の最小値と全ての最小値から重複除去して記録
         sub_mapping[document['id']] = list(set(
-            [x['id'] for x in higher_all_distances] +
-            [x['id'] for x in higher_ave_distances] +
+            [x['id'] for x in higher_distances] +
             [x['id'] for x in all_zero_distances] +
             [x['id'] for x in ave_zero_distances]
         ))
@@ -148,52 +152,10 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
 
 
 def calc_distance(target_sentence, sentence):
-    # 分かち書きをしてストップワードを除去
-    stopwords = get_stopwords()
     sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
-    sentence_wakachi = [x for x in sentence_wakachi if x not in stopwords]
     target_sentence_wakachi = mecab.parse(target_sentence).replace(' \n', '').split()
-    target_sentence_wakachi = [x for x in target_sentence_wakachi if x not in stopwords]
 
-    all_distances = [] # 全ての距離
-    ave_distances = [] # target_sentenceとsentenceの10単語くぎりごとの平均距離
-
-    for target_sentence_ten_word in get_ten_words(target_sentence_wakachi):
-        tmp_distances = []
-
-        for sentence_ten_word in get_ten_words(sentence_wakachi):
-            dis = word2vec_model.wmdistance(target_sentence_ten_word, sentence_ten_word)
-            tmp_distances.append(dis)
-            all_distances.append(dis)
-
-        ave_distances.append(sum(tmp_distances) / len(tmp_distances))
-
-    return {'all': min(all_distances), 'ave': min(ave_distances)}
-
-
-def get_stopwords():
-    stopword_f = open('../2018/stopwords.txt', 'r')
-    stopwords = stopword_f.readlines()
-    stopword_f.close()
-    stopwords = [x.replace('\n', '') for x in stopwords]
-
-    return stopwords
-
-
-def get_ten_words(sentence):
-    results = []
-    s = 0
-    e = 10
-    while True:
-        if len(sentence[s:e]) == 0:
-            break
-
-        results.append(sentence[s:e])
-
-        s = e
-        e += 10
-
-    return results
+    return word2vec_model.wmdistance(sentence_wakachi, target_sentence_wakachi)
 
 
 def add_document(kpt_list, student_number, day, kpt):
