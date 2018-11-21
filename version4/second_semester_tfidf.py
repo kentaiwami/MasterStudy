@@ -82,11 +82,8 @@ def get_stopwords():
 
 
 def get_wakachi(sentence):
-    stopwords = get_stopwords()
     sentence_list = mecab.parse(sentence).replace(' \n', '').split()
-    wakachi_list = [x for x in sentence_list if x not in stopwords]
-
-    return ' '.join(wakachi_list)
+    return ' '.join(sentence_list)
 
 
 def get_documents():
