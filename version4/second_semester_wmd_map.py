@@ -22,7 +22,11 @@ def subcalc(p, all_documents):
         print('{}: {}%'.format(process[p], int(i/total*100)))
 
         distances = []
-        other_documents = [x for x in all_documents if x['id'] != document['id']]
+
+        if is_include_self:
+            other_documents = [x for x in all_documents if x['id'] != document['id']]
+        else:
+            other_documents = [x for x in all_documents if x['student'] != document['student']]
 
         test_file = open('../2018/wmd_map_output/test.txt', 'a')
 
@@ -119,7 +123,7 @@ def main():
     """
     結果出力
     """
-    output_csv(not_mapping_ids, sorted_many_mapping, all_documents)
+    output_csv(sorted(not_mapping_ids), sorted_many_mapping, all_documents)
 
     # デバッグ用にマッピングの結果を出力
     debug_file = open('../2018/wmd_map_output/debug.txt', 'w')
@@ -129,8 +133,13 @@ def main():
 
 
 def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
-    rare_file = open('../2018/wmd_map_output/rare.csv', 'w')
-    many_file = open('../2018/wmd_map_output/many.csv', 'w')
+    if is_include_self:
+        name = '_include_self'
+    else:
+        name = ''
+
+    rare_file = open('../2018/wmd_map_output/rare{}.csv'.format(name), 'w')
+    many_file = open('../2018/wmd_map_output/many{}.csv'.format(name), 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT'])
@@ -176,6 +185,7 @@ def add_document(kpt_list, student_number, day, kpt):
 
 
 if __name__ == '__main__':
+    is_include_self = False
     proc = 16
     process = [chr(i) for i in range(65, 65 + 26)]
     document_id = 0
