@@ -61,10 +61,10 @@ def output_csv(documents):
     file = open('../2018/tfidf_output/{}.csv'.format(mode), 'w')
     writer = csv.writer(file, lineterminator='\n')
     documents.sort(key=lambda x: x[mode], reverse=True)
-    writer.writerow(['student', 'date', 'origin', mode])
+    writer.writerow(['student', 'day', 'origin', 'id', 'tfidf', 'KPT'])
 
     for document in documents:
-        writer.writerow([document['student'], document['date'], document['origin'], document[mode]])
+        writer.writerow([document['student'], document['date'], document['origin'], document['id'], document[mode], document['KPT']])
     file.close()
 
 
@@ -96,15 +96,34 @@ def get_documents():
 
     for student_number in data.keys():
         for day in data[student_number].keys():
-            date = datetime.datetime.strptime('2018年' + day, "%Y年%m月%d日")
-            documents += [{'wakachi': get_wakachi(keep_sentence), 'origin': keep_sentence, 'student': student_number, 'date': str(date.date())} for keep_sentence in data[student_number][day]['K']]
-            documents += [{'wakachi': get_wakachi(problem_sentence), 'origin': problem_sentence, 'student': student_number, 'date': str(date.date())} for problem_sentence in data[student_number][day]['P']]
-            documents += [{'wakachi': get_wakachi(try_sentence), 'origin': try_sentence, 'student': student_number, 'date': str(date.date())} for try_sentence in data[student_number][day]['T']]
+            documents += get_kpt_documents(data, student_number, day, 'K')
+            documents += get_kpt_documents(data, student_number, day, 'P')
+            documents += get_kpt_documents(data, student_number, day, 'T')
 
-    print(documents)
     return documents
 
 
+def get_kpt_documents(data, student_number, day, kpt):
+    global document_id
+    tmp_documents = []
+    date = datetime.datetime.strptime('2018年' + day, "%Y年%m月%d日")
+
+    for sentence in data[student_number][day][kpt]:
+        tmp_documents.append({
+            'wakachi': get_wakachi(sentence),
+            'origin': sentence,
+            'student': student_number,
+            'date': str(date.date()),
+            'KPT': kpt,
+            'id': document_id
+        })
+
+        document_id += 1
+
+    return tmp_documents
+
+
 if __name__ == '__main__':
+    document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     main()
