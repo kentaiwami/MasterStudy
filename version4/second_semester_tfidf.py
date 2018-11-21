@@ -61,6 +61,8 @@ def main():
 
 def output_csv(documents):
     # sum, ave, min, max
+    # aveとsumはis_top3の状態では上位100件くらいまでは同じ結果
+
     mode = 'sum'
 
     if is_top3:
