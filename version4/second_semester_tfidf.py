@@ -72,15 +72,6 @@ def new_idf(docfreq, totaldocs, log_base=2.0, add=1.0):
     return add + math.log(1.0 * totaldocs / docfreq, log_base)
 
 
-def get_stopwords():
-    stopword_f = open('../2018/stopwords.txt', 'r')
-    stopwords = stopword_f.readlines()
-    stopword_f.close()
-    stopwords = [x.replace('\n', '') for x in stopwords]
-
-    return stopwords
-
-
 def get_wakachi(sentence):
     sentence_list = mecab.parse(sentence).replace(' \n', '').split()
     return ' '.join(sentence_list)
