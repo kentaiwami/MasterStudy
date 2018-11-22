@@ -40,10 +40,15 @@ def main():
     # 表示
     print('===結果表示===')
     for i, text in enumerate(texts_tfidf):
-        tfidf_list = [word_tfidf[1] for word_tfidf in text]
+        tmp_tfidf_list = [word_tfidf[1] for word_tfidf in text]
+
+        if is_top3:
+            tfidf_list = sorted(tmp_tfidf_list, reverse=True)[:3]
+        else:
+            tfidf_list = tmp_tfidf_list
 
         documents[i]['sum'] = sum(tfidf_list)
-        documents[i]['ave'] = sum(tfidf_list) / len(text)
+        documents[i]['ave'] = sum(tfidf_list) / len(tfidf_list)
         documents[i]['min'] = min(tfidf_list)
         documents[i]['max'] = max(tfidf_list)
 
@@ -56,9 +61,16 @@ def main():
 
 def output_csv(documents):
     # sum, ave, min, max
-    mode = 'max'
+    # aveとsumはis_top3の状態では上位100件くらいまでは同じ結果
 
-    file = open('../2018/tfidf_output/{}.csv'.format(mode), 'w')
+    mode = 'sum'
+
+    if is_top3:
+        name = 'top3'
+    else:
+        name = ''
+
+    file = open('../2018/tfidf_output/{}_{}.csv'.format(mode, name), 'w')
     writer = csv.writer(file, lineterminator='\n')
     documents.sort(key=lambda x: x[mode], reverse=True)
     writer.writerow(['student', 'day', 'origin', 'id', 'tfidf', 'KPT'])
@@ -112,6 +124,7 @@ def get_kpt_documents(data, student_number, day, kpt):
 
 
 if __name__ == '__main__':
+    is_top3 = True
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     main()
