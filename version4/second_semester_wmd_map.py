@@ -171,13 +171,20 @@ def add_document(kpt_list, student_number, day, kpt):
     global document_id
     tmp_documents = []
 
+    if kpt == 'K':
+        output_kpt = 'Keep'
+    elif kpt == 'P':
+        output_kpt = 'Problem'
+    else:
+        output_kpt = 'Try'
+
     for text in kpt_list:
         tmp_documents.append({
             'id': document_id,
             'origin': text,
             'student': student_number,
             'day': day,
-            'KPT': kpt
+            'KPT': output_kpt
         })
         document_id += 1
 
