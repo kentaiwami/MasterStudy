@@ -108,13 +108,20 @@ def get_kpt_documents(data, student_number, day, kpt):
     tmp_documents = []
     date = datetime.datetime.strptime('2018年' + day, "%Y年%m月%d日")
 
+    if kpt == 'K':
+        output_kpt = 'Keep'
+    elif kpt == 'P':
+        output_kpt = 'Problem'
+    else:
+        output_kpt = 'Try'
+
     for sentence in data[student_number][day][kpt]:
         tmp_documents.append({
             'wakachi': get_wakachi(sentence),
             'origin': sentence,
             'student': student_number,
             'date': str(date.date()),
-            'KPT': kpt,
+            'KPT': output_kpt,
             'id': document_id
         })
 
