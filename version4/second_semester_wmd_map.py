@@ -28,20 +28,14 @@ def subcalc(p, all_documents):
         else:
             other_documents = [x for x in all_documents if x['student'] != document['student']]
 
-        test_file = open('../2018/wmd_map_output/test.txt', 'a')
-
         for other_document in other_documents:
             distance_result = calc_distance(document['origin'], other_document['origin'])
-
-            if distance_result == 0.0:
-                test_file.write('{}, {}\n'.format(document['origin'], other_document['origin']))
 
             distances.append({
                 'dis': distance_result,
                 'id': other_document['id']
             })
 
-        test_file.close()
 
         """
         マッピング
@@ -124,12 +118,6 @@ def main():
     結果出力
     """
     output_csv(sorted(not_mapping_ids), sorted_many_mapping, all_documents)
-
-    # デバッグ用にマッピングの結果を出力
-    debug_file = open('../2018/wmd_map_output/debug.txt', 'w')
-    for key in mapping:
-        debug_file.write('{}: {}\n'.format(key, mapping[key]))
-    debug_file.close()
 
 
 def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
