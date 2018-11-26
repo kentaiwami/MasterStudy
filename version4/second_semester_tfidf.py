@@ -66,11 +66,11 @@ def output_csv(documents):
     mode = 'sum'
 
     if is_top3:
-        name = 'top3'
+        name = '_top3'
     else:
         name = ''
 
-    file = open('../2018/tfidf_output/{}_{}.csv'.format(mode, name), 'w')
+    file = open('../2018/tfidf_output/{}{}.csv'.format(mode, name), 'w')
     writer = csv.writer(file, lineterminator='\n')
     documents.sort(key=lambda x: x[mode], reverse=True)
     writer.writerow(['student', 'day', 'origin', 'id', 'tfidf', 'KPT'])
@@ -131,7 +131,7 @@ def get_kpt_documents(data, student_number, day, kpt):
 
 
 if __name__ == '__main__':
-    is_top3 = True
+    is_top3 = False
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     main()
