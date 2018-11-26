@@ -131,7 +131,7 @@ def get_kpt_documents(data, student_number, day, kpt):
 
 
 if __name__ == '__main__':
-    is_top3 = False
+    is_top3 = True
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     main()
