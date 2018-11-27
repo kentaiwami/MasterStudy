@@ -71,7 +71,7 @@ def subcalc(p, all_documents):
 
 def main():
     global document_id
-    file = open(os.path.normpath(os.path.join(base_path, '../2018/後期.json')))
+    file = open(os.path.normpath(os.path.join(base_path, '../../2018/後期.json')))
     data = json.load(file)
     all_documents = []
 
@@ -131,8 +131,8 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
     else:
         name = ''
 
-    rare_file = open(os.path.normpath(os.path.join(base_path, '../2018/wmd_map_output/rare{}.csv'.format(name))), 'w')
-    many_file = open(os.path.normpath(os.path.join(base_path, '../2018/wmd_map_output/many{}.csv'.format(name))), 'w')
+    rare_file = open(os.path.normpath(os.path.join(base_path, '../../2018/wmd_map_output/rare{}.csv'.format(name))), 'w')
+    many_file = open(os.path.normpath(os.path.join(base_path, '../../2018/wmd_map_output/many{}.csv'.format(name))), 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT'])
