@@ -4,6 +4,8 @@ import json
 import csv
 import multiprocessing as mp
 import time
+import os
+import correspondence_student_number
 
 
 def wrap_subcalc(args):
@@ -67,7 +69,7 @@ def subcalc(p, all_documents):
 
 def main():
     global document_id
-    file = open("../2018/後期.json")
+    file = open(os.path.normpath(os.path.join(base_path, '../2018/後期.json')))
     data = json.load(file)
     all_documents = []
 
@@ -82,6 +84,7 @@ def main():
             all_documents += add_document(data[student_number][day]['P'], student_number, day, 'P')
             all_documents += add_document(data[student_number][day]['T'], student_number, day, 'T')
 
+    file.close()
 
     """
     距離を計算してマッピングをする
@@ -126,15 +129,16 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
     else:
         name = ''
 
-    rare_file = open('../2018/wmd_map_output/rare{}.csv'.format(name), 'w')
-    many_file = open('../2018/wmd_map_output/many{}.csv'.format(name), 'w')
+    rare_file = open(os.path.normpath(os.path.join(base_path, '../2018/wmd_map_output/rare{}.csv'.format(name))), 'w')
+    many_file = open(os.path.normpath(os.path.join(base_path, '../2018/wmd_map_output/many{}.csv'.format(name))), 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT'])
 
     for not_mapping_id in not_mapping_ids:
         doc = all_documents[not_mapping_id]
-        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['id'], doc['KPT']])
+        student_name = correspondence_student_number.get_name(doc['student'])
+        writer.writerow([student_name, doc['day'], doc['origin'], doc['id'], doc['KPT']])
 
 
     writer = csv.writer(many_file, lineterminator='\n')
@@ -142,7 +146,8 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
 
     for many_mapping in sorted_many_mapping:
         doc = all_documents[many_mapping[0]]
-        writer.writerow([doc['student'], doc['day'], doc['origin'], doc['id'], len(many_mapping[1]), doc['KPT']])
+        student_name = correspondence_student_number.get_name(doc['student'])
+        writer.writerow([student_name, doc['day'], doc['origin'], doc['id'], len(many_mapping[1]), doc['KPT']])
 
     many_file.close()
     rare_file.close()
@@ -186,6 +191,7 @@ if __name__ == '__main__':
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     word2vec_model = KeyedVectors.load_word2vec_format('../model/tohoku/model.bin', binary=True)
+    base_path = os.path.dirname(os.path.abspath(__file__))
 
     start = time.time()
 

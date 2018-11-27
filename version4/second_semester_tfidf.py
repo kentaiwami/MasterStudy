@@ -5,6 +5,8 @@ import json
 import datetime
 import MeCab
 import csv
+import correspondence_student_number
+import os
 
 
 def main():
@@ -70,13 +72,14 @@ def output_csv(documents):
     else:
         name = ''
 
-    file = open('../2018/tfidf_output/{}{}.csv'.format(mode, name), 'w')
+    file = open(os.path.normpath(os.path.join(base_path, '../2018/tfidf_output/{}{}.csv'.format(mode, name))), 'w')
     writer = csv.writer(file, lineterminator='\n')
     documents.sort(key=lambda x: x[mode], reverse=True)
     writer.writerow(['student', 'day', 'origin', 'id', 'tfidf', 'KPT'])
 
     for document in documents:
-        writer.writerow([document['student'], document['date'], document['origin'], document['id'], document[mode], document['KPT']])
+        student_name = correspondence_student_number.get_name(document['student'])
+        writer.writerow([student_name, document['date'], document['origin'], document['id'], document[mode], document['KPT']])
     file.close()
 
 
@@ -91,7 +94,7 @@ def get_wakachi(sentence):
 
 def get_documents():
     documents = []
-    file = open("../2018/後期.json")
+    file = open(os.path.normpath(os.path.join(base_path, '../2018/後期.json')))
     data = json.load(file)
 
     for student_number in data.keys():
@@ -100,6 +103,7 @@ def get_documents():
             documents += get_kpt_documents(data, student_number, day, 'P')
             documents += get_kpt_documents(data, student_number, day, 'T')
 
+    file.close()
     return documents
 
 
@@ -134,4 +138,5 @@ if __name__ == '__main__':
     is_top3 = True
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
+    base_path = os.path.dirname(os.path.abspath(__file__))
     main()
