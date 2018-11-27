@@ -140,8 +140,8 @@ def output_csv(sorted_wmd_list):
 
 def main():
     tfidf_ave = get_tfidf_ave()
-    removie_document_ids = get_document_id_less_than_ave(tfidf_ave)
-    sorted_wmd_list = coordination_wmd(removie_document_ids)
+    remove_document_ids = get_document_id_less_than_ave(tfidf_ave)
+    sorted_wmd_list = coordination_wmd(remove_document_ids)
     output_csv(sorted_wmd_list)
 
 
