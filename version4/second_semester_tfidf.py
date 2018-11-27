@@ -7,6 +7,8 @@ import MeCab
 import csv
 import correspondence_student_number
 import os
+import sys
+from distutils.util import strtobool
 
 
 def main():
@@ -134,8 +136,20 @@ def get_kpt_documents(data, student_number, day, kpt):
     return tmp_documents
 
 
+def check_argv():
+    if len(sys.argv) == 1:
+        raise ValueError
+
+    try:
+        tmp_is_top3 = strtobool(sys.argv[1])
+    except ValueError:
+        raise ValueError
+
+    return tmp_is_top3
+
+
 if __name__ == '__main__':
-    is_top3 = True
+    is_top3 = check_argv()
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     base_path = os.path.dirname(os.path.abspath(__file__))

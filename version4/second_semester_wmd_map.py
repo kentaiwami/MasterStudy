@@ -6,6 +6,8 @@ import multiprocessing as mp
 import time
 import os
 import correspondence_student_number
+import sys
+from distutils.util import strtobool
 
 
 def wrap_subcalc(args):
@@ -184,8 +186,20 @@ def add_document(kpt_list, student_number, day, kpt):
     return tmp_documents
 
 
+def check_argv():
+    if len(sys.argv) == 1:
+        raise ValueError
+
+    try:
+        tmp_is_include_self = strtobool(sys.argv[1])
+    except ValueError:
+        raise ValueError
+
+    return tmp_is_include_self
+
+
 if __name__ == '__main__':
-    is_include_self = False
+    is_include_self = check_argv()
     proc = 16
     process = [chr(i) for i in range(65, 65 + 26)]
     document_id = 0
