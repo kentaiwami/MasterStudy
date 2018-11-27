@@ -1,5 +1,6 @@
 import os
 import csv
+import correspondence_student_number
 
 
 def get_tfidf_ave():
@@ -128,12 +129,13 @@ def coordination_wmd(remove_document_ids):
 
 
 def output_csv(sorted_wmd_list):
-    output_file = open('../2018/tfidf_wmd_merge/merged_rare.csv', 'w')
+    output_file = open(os.path.normpath(os.path.join(base_path, '../2018/tfidf_wmd_merge/merged_rare.csv')), 'w')
     writer = csv.writer(output_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT', 'sort_id'])
 
     for wmd_dict in sorted_wmd_list:
-        writer.writerow([wmd_dict['student'], wmd_dict['date'], wmd_dict['origin'], wmd_dict['id'], wmd_dict['KPT'], wmd_dict['sort_id']])
+        student_name = correspondence_student_number.get_name(wmd_dict['student'])
+        writer.writerow([student_name, wmd_dict['date'], wmd_dict['origin'], wmd_dict['id'], wmd_dict['KPT'], wmd_dict['sort_id']])
 
     output_file.close()
 
@@ -146,6 +148,10 @@ def main():
 
 
 if __name__ == '__main__':
-    tfidf_file_path = '../2018/tfidf_output/sum_top3.csv'
-    wmd_file_path = ['../2018/wmd_map_output/many.csv', '../2018/wmd_map_output/rare.csv']
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    tfidf_file_path = os.path.normpath(os.path.join(base_path, '../2018/tfidf_output/sum_top3.csv'))
+    wmd_file_path = [
+        os.path.normpath(os.path.join(base_path, '../2018/wmd_map_output/many.csv')),
+        os.path.normpath(os.path.join(base_path, '../2018/wmd_map_output/rare.csv'))
+    ]
     main()
