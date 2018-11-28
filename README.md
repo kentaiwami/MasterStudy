@@ -20,9 +20,7 @@ WMDで距離を求めて、該当のProblem,Tryに似たKeppを抽出する。
 
 ### 方法
 1. create_json.py
-2. wmd_map.py
-3. tfidf.py
-4. merge_tfidf_wmd.py
-5. count.py
+2. calc_distance.py
+3. convert_csv.py
 
 ※上記ファイルはversion4/second_semesterにある。

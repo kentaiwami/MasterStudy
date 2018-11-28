@@ -105,5 +105,6 @@ all_student_wakachi
 model
 *.bz2
 2017/
-2018/
-version4/second_semester/correspondence_student_number.py
+2018/second/output
+2018/first/output
+correspondence_student_number.py
