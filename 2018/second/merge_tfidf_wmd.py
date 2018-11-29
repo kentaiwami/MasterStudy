@@ -1,6 +1,8 @@
 import os
 import csv
 import correspondence_student_number
+import sys
+from distutils.util import strtobool
 
 
 def get_tfidf_ave():
@@ -78,7 +80,7 @@ def coordination_wmd(remove_document_ids):
     """
     tfidfの作業用リストを作成
     """
-    tmp_tfidf_document_ids = []
+    tfidf_documents = []
     tfidf_file = open(tfidf_file_path, 'r')
     tfidf_dataReader = csv.reader(tfidf_file)
 
@@ -86,7 +88,13 @@ def coordination_wmd(remove_document_ids):
         if i == 0:
             continue
 
-        tmp_tfidf_document_ids.append(int(row[3]))
+        tfidf_documents.append({
+            'student': row[0],
+            'date': row[1],
+            'origin': row[2],
+            'id': int(row[3]),
+            'KPT': row[5]
+        })
 
     tfidf_file.close()
 
@@ -94,19 +102,43 @@ def coordination_wmd(remove_document_ids):
     """
     tfidfが平均値以下のドキュメントをwmdの結果から削除
     """
+
+    removed_count = 0
     for remove_id in remove_document_ids:
         tmp_result = [x for x in wmd_list if x['id'] == remove_id]
 
         if len(tmp_result) == 0:
             continue
 
+        removed_count += 1
         wmd_list.remove(tmp_result[0])
+
+    """
+    削除したドキュメントの個数分だけ、tfidfの上位からwmdに挿入する。
+    ただし、既に同じドキュメントがwmdに入っている場合は何もしない
+    """
+    if is_insert:
+        tfidf_slice_documents = tfidf_documents[:removed_count]
+
+        for tfidf_doc in tfidf_slice_documents:
+            tmp_search_result = [x for x in wmd_list if tfidf_doc['id'] == x['id']]
+
+            if len(tmp_search_result) == 0:
+                wmd_list.append({
+                    'student': tfidf_doc['student'],
+                    'date': tfidf_doc['date'],
+                    'origin': tfidf_doc['origin'],
+                    'id': tfidf_doc['id'],
+                    'KPT': tfidf_doc['KPT']
+                })
+
 
 
     """
     tfidfの順番に沿うようにwmdを並び替え
     """
     sorted_wmd_list = []
+    tmp_tfidf_document_ids = [x['id'] for x in tfidf_documents]
 
     for i, wmd_dict in enumerate(wmd_list, 1):
         if wmd_dict['id'] in tmp_tfidf_document_ids:
@@ -129,7 +161,12 @@ def coordination_wmd(remove_document_ids):
 
 
 def output_csv(sorted_wmd_list):
-    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare.csv')), 'w')
+    if is_insert:
+        name = '_insert'
+    else:
+        name = ''
+
+    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare{}.csv'.format(name))), 'w')
     writer = csv.writer(output_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT', 'sort_id'])
 
@@ -147,7 +184,20 @@ def main():
     output_csv(sorted_wmd_list)
 
 
+def check_argv():
+    if len(sys.argv) == 1:
+        raise ValueError
+
+    try:
+        tmp_is_insert = strtobool(sys.argv[1])
+    except ValueError:
+        raise ValueError
+
+    return tmp_is_insert
+
+
 if __name__ == '__main__':
+    is_insert = check_argv()
     base_path = os.path.dirname(os.path.abspath(__file__))
     tfidf_file_path = os.path.normpath(os.path.join(base_path, 'output/tfidf/sum_top3.csv'))
     wmd_file_path = [

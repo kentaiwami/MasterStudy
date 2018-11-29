@@ -112,7 +112,6 @@ def get_documents():
 def get_kpt_documents(data, student_number, day, kpt):
     global document_id
     tmp_documents = []
-    date = datetime.datetime.strptime('2018年' + day, "%Y年%m月%d日")
 
     if kpt == 'K':
         output_kpt = 'Keep'
@@ -126,7 +125,7 @@ def get_kpt_documents(data, student_number, day, kpt):
             'wakachi': get_wakachi(sentence),
             'origin': sentence,
             'student': student_number,
-            'date': str(date.date()),
+            'date': day,
             'KPT': output_kpt,
             'id': document_id
         })
