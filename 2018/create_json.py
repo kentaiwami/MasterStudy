@@ -9,6 +9,9 @@ def get_worksheet_list(doc_id):
     scope = ['https://spreadsheets.google.com/feeds']
     path = os.path.expanduser("../key.json")
 
+    # print(path)
+    # exit(1)
+
     credentials = ServiceAccountCredentials.from_json_keyfile_name(path, scope)
     client = gspread.authorize(credentials)
     gfile = client.open_by_key(doc_id)
@@ -25,7 +28,8 @@ def main():
     del worksheets[0]
     columns = [chr(i) for i in range(67,67+22)]
 
-    output_json_file = open('../2018/後期.json', 'w')
+
+    # output_json_file = open('../2018/後期.json', 'w')
     output_json_dict = {}
 
     total = len(worksheets) * len(columns)
@@ -57,9 +61,11 @@ def main():
 
         output_json_dict[worksheet.title] = day_dict
 
+    output_json_file = open(os.path.normpath(os.path.join(base_path, '後期.json')), 'w')
     json.dump(output_json_dict, output_json_file, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
     output_json_file.close()
 
 
 if __name__ == '__main__':
+    base_path = os.path.dirname(os.path.abspath(__file__))
     main()
