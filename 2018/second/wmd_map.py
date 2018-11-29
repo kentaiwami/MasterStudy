@@ -144,12 +144,15 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
 
 
     writer = csv.writer(many_file, lineterminator='\n')
-    writer.writerow(['student', 'date', 'origin', 'count', 'KPT', 'id'])
+    writer.writerow(['student', 'date', 'origin', 'count', 'KPT', 'id', 'mappings'])
 
     for many_mapping in sorted_many_mapping:
         doc = all_documents[many_mapping[0]]
         student_name = correspondence_student_number.get_name(doc['student'])
-        writer.writerow([student_name, doc['day'], doc['origin'], len(many_mapping[1]), doc['KPT'], doc['id']])
+        mappings = [str(x) for x in many_mapping[1]]
+        mappings = ' '.join(mappings)
+
+        writer.writerow([student_name, doc['day'], doc['origin'], len(many_mapping[1]), doc['KPT'], doc['id'], mappings])
 
     many_file.close()
     rare_file.close()
@@ -205,7 +208,6 @@ if __name__ == '__main__':
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     base_path = os.path.dirname(os.path.abspath(__file__))
-    # word2vec_model = KeyedVectors.load_word2vec_format('../model/tohoku/model.bin', binary=True)
     word2vec_model = KeyedVectors.load_word2vec_format(os.path.normpath(os.path.join(base_path, '../../model/tohoku/model.bin')), binary=True)
 
     start = time.time()
