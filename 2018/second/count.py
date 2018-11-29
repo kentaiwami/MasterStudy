@@ -1,12 +1,13 @@
 import os
 import json
 import correspondence_student_number
+import csv
 
 
 def main():
     file = open(os.path.normpath(os.path.join(base_path, '../後期.json')))
     data = json.load(file)
-    results = {}
+    results = []
 
     for student_number in data.keys():
         char_count = 0
@@ -23,14 +24,29 @@ def main():
             p_count += len(data[student_number][day]['P'])
             t_count += len(data[student_number][day]['T'])
 
-        results[student_number] = [char_count, k_count, p_count, t_count]
+        results.append({
+            'id': student_number,
+            'name': correspondence_student_number.get_name(student_number),
+            'char': char_count,
+            'k': k_count,
+            'p': p_count,
+            't': t_count
+        })
 
     file.close()
 
-    print('char keep problem try')
-    for student_number in results:
-        student_name = correspondence_student_number.get_name(student_number)
-        print('{}: {} {} {} {}'.format(student_name, results[student_number][0], results[student_number][1], results[student_number][2], results[student_number][3]))
+    # ファイル出力
+    char_count_file = open(os.path.normpath(os.path.join(base_path, 'output/count/char.csv')), 'w')
+    kpt_count_file = open(os.path.normpath(os.path.join(base_path, 'output/count/kpt.csv')), 'w')
+    char_count_writer = csv.writer(char_count_file, lineterminator='\n')
+    kpt_count_writer = csv.writer(kpt_count_file, lineterminator='\n')
+
+    for result_dict in sorted(results, key=lambda x: x['char'], reverse=True):
+        char_count_writer.writerow([result_dict['name'], result_dict['char']])
+        kpt_count_writer.writerow([result_dict['name'], result_dict['k'], result_dict['p'], result_dict['t']])
+
+    char_count_file.close()
+    kpt_count_file.close()
 
 
 def get_char_count_from_sentences(sentences):
