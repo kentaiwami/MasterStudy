@@ -143,7 +143,7 @@ def output_csv(sorted_wmd_list):
     writer = csv.writer(output_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'KPT', 'id', 'sort_id'])
 
-    for wmd_dict in sorted_wmd_list:
+    for wmd_dict in sorted(sorted_wmd_list, key=lambda x: (x['student'], x['sort_id'])):
         student_name = correspondence_student_number.get_name(wmd_dict['student'])
         writer.writerow([student_name, wmd_dict['date'], wmd_dict['origin'], wmd_dict['KPT'], wmd_dict['id'], wmd_dict['sort_id']])
 
