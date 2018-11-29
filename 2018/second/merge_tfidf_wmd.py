@@ -1,8 +1,6 @@
 import os
 import csv
 import correspondence_student_number
-import sys
-from distutils.util import strtobool
 
 
 def get_tfidf_ave():
@@ -113,26 +111,6 @@ def coordination_wmd(remove_document_ids):
         removed_count += 1
         wmd_list.remove(tmp_result[0])
 
-    """
-    削除したドキュメントの個数分だけ、tfidfの上位からwmdに挿入する。
-    ただし、既に同じドキュメントがwmdに入っている場合は何もしない
-    """
-    if is_insert:
-        tfidf_slice_documents = tfidf_documents[:removed_count]
-
-        for tfidf_doc in tfidf_slice_documents:
-            tmp_search_result = [x for x in wmd_list if tfidf_doc['id'] == x['id']]
-
-            if len(tmp_search_result) == 0:
-                wmd_list.append({
-                    'student': tfidf_doc['student'],
-                    'date': tfidf_doc['date'],
-                    'origin': tfidf_doc['origin'],
-                    'id': tfidf_doc['id'],
-                    'KPT': tfidf_doc['KPT']
-                })
-
-
 
     """
     tfidfの順番に沿うようにwmdを並び替え
@@ -161,12 +139,7 @@ def coordination_wmd(remove_document_ids):
 
 
 def output_csv(sorted_wmd_list):
-    if is_insert:
-        name = '_insert'
-    else:
-        name = ''
-
-    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare{}.csv'.format(name))), 'w')
+    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare.csv')), 'w')
     writer = csv.writer(output_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'KPT', 'id', 'sort_id'])
 
@@ -184,20 +157,7 @@ def main():
     output_csv(sorted_wmd_list)
 
 
-def check_argv():
-    if len(sys.argv) == 1:
-        raise ValueError
-
-    try:
-        tmp_is_insert = strtobool(sys.argv[1])
-    except ValueError:
-        raise ValueError
-
-    return tmp_is_insert
-
-
 if __name__ == '__main__':
-    is_insert = check_argv()
     base_path = os.path.dirname(os.path.abspath(__file__))
     tfidf_file_path = os.path.normpath(os.path.join(base_path, 'output/tfidf/sum_top3.csv'))
     wmd_file_path = os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare.csv'))
