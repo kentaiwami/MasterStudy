@@ -74,7 +74,7 @@ def output_csv(documents):
     else:
         name = ''
 
-    file = open(os.path.normpath(os.path.join(base_path, '../../2018/tfidf_output/{}{}.csv'.format(mode, name))), 'w')
+    file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf/{}{}.csv'.format(mode, name))), 'w')
     writer = csv.writer(file, lineterminator='\n')
     documents.sort(key=lambda x: x[mode], reverse=True)
     writer.writerow(['student', 'day', 'origin', 'id', 'tfidf', 'KPT'])
@@ -96,7 +96,7 @@ def get_wakachi(sentence):
 
 def get_documents():
     documents = []
-    file = open(os.path.normpath(os.path.join(base_path, '../../2018/後期.json')))
+    file = open(os.path.normpath(os.path.join(base_path, '../後期.json')))
     data = json.load(file)
 
     for student_number in data.keys():

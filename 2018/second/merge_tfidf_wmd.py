@@ -129,7 +129,7 @@ def coordination_wmd(remove_document_ids):
 
 
 def output_csv(sorted_wmd_list):
-    output_file = open(os.path.normpath(os.path.join(base_path, '../../2018/tfidf_wmd_merge/merged_rare.csv')), 'w')
+    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare.csv')), 'w')
     writer = csv.writer(output_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT', 'sort_id'])
 
@@ -149,9 +149,9 @@ def main():
 
 if __name__ == '__main__':
     base_path = os.path.dirname(os.path.abspath(__file__))
-    tfidf_file_path = os.path.normpath(os.path.join(base_path, '../../2018/tfidf_output/sum_top3.csv'))
+    tfidf_file_path = os.path.normpath(os.path.join(base_path, 'output/tfidf/sum_top3.csv'))
     wmd_file_path = [
-        os.path.normpath(os.path.join(base_path, '../../2018/wmd_map_output/many.csv')),
-        os.path.normpath(os.path.join(base_path, '../../2018/wmd_map_output/rare.csv'))
+        os.path.normpath(os.path.join(base_path, 'output/wmd_map/many.csv')),
+        os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare.csv'))
     ]
     main()

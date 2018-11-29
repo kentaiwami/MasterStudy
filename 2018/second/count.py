@@ -4,7 +4,7 @@ import correspondence_student_number
 
 
 def main():
-    file = open(os.path.normpath(os.path.join(base_path, '../../2018/後期.json')))
+    file = open(os.path.normpath(os.path.join(base_path, '../後期.json')))
     data = json.load(file)
     results = {}
 
