@@ -115,8 +115,8 @@ def main():
     # マッピングされていないidを抽出
     not_mapping_ids = [x for x in range(document_id) if x not in mapping_ids]
 
-    # より多くマッピングされている順にソート
-    sorted_many_mapping = sorted(mapping.items(), key=lambda x: len(x[1]), reverse=True)
+    # より多くマッピングされているかつ学生順にソート
+    sorted_many_mapping = sorted(mapping.items(), key=lambda x: (len(x[1]), x[0]), reverse=True)
 
 
     """
