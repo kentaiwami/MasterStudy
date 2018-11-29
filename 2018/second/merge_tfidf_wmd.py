@@ -10,7 +10,7 @@ def get_tfidf_ave():
     全文章のtf-idfの値から平均値を求める
     """
 
-    if not os.path.isfile(tfidf_file_path) or not os.path.isfile(wmd_file_path[0]) or not os.path.isfile(wmd_file_path[1]):
+    if not os.path.isfile(tfidf_file_path) or not os.path.isfile(wmd_file_path):
         raise FileNotFoundError
 
 
@@ -55,7 +55,7 @@ def coordination_wmd(remove_document_ids):
     :param remove_document_ids: wmdの結果から削除すべきdocument_id（tf-idfの平均値より低いドキュメント）
     """
 
-    wmd_file = open(wmd_file_path[1], 'r')
+    wmd_file = open(wmd_file_path, 'r')
     wmd_dataReader = csv.reader(wmd_file)
     wmd_list = []
 
@@ -168,11 +168,11 @@ def output_csv(sorted_wmd_list):
 
     output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare{}.csv'.format(name))), 'w')
     writer = csv.writer(output_file, lineterminator='\n')
-    writer.writerow(['student', 'date', 'origin', 'id', 'KPT', 'sort_id'])
+    writer.writerow(['student', 'date', 'origin', 'KPT', 'id', 'sort_id'])
 
     for wmd_dict in sorted_wmd_list:
         student_name = correspondence_student_number.get_name(wmd_dict['student'])
-        writer.writerow([student_name, wmd_dict['date'], wmd_dict['origin'], wmd_dict['id'], wmd_dict['KPT'], wmd_dict['sort_id']])
+        writer.writerow([student_name, wmd_dict['date'], wmd_dict['origin'], wmd_dict['KPT'], wmd_dict['id'], wmd_dict['sort_id']])
 
     output_file.close()
 
@@ -200,8 +200,5 @@ if __name__ == '__main__':
     is_insert = check_argv()
     base_path = os.path.dirname(os.path.abspath(__file__))
     tfidf_file_path = os.path.normpath(os.path.join(base_path, 'output/tfidf/sum_top3.csv'))
-    wmd_file_path = [
-        os.path.normpath(os.path.join(base_path, 'output/wmd_map/many.csv')),
-        os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare.csv'))
-    ]
+    wmd_file_path = os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare.csv'))
     main()
