@@ -175,16 +175,19 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
 
 
 def calc_distance(target_sentence, sentence):
-    # TODO 0の時そもそも計算をしないでスキップするようにしたい
     if is_meishi_only:
         sentence_wakachi = get_maishi_wakachi(sentence)
         target_sentence_wakachi = get_maishi_wakachi(target_sentence)
+
+        if len(sentence_wakachi) == 0:
+            sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
+
+        if len(target_sentence_wakachi) == 0:
+            target_sentence_wakachi = mecab.parse(target_sentence).replace(' \n', '').split()
+
     else:
         sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
         target_sentence_wakachi = mecab.parse(target_sentence).replace(' \n', '').split()
-
-    if len(sentence_wakachi) == 0 or len(target_sentence_wakachi) == 0:
-        return 99999
 
     return word2vec_model.wmdistance(sentence_wakachi, target_sentence_wakachi)
 
