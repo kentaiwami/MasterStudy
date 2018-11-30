@@ -115,14 +115,24 @@ def main():
     # マッピングされていないidを抽出
     not_mapping_ids = [x for x in range(document_id) if x not in mapping_ids]
 
-    # 学生順かつより多くマッピングされている順にソート
-    sorted_many_mapping = sorted(mapping.items(), key=lambda x: (correspondence_student_number.get_name(all_documents[x[0]]['student']), len(x[1])), reverse=True)
+    # 学生順、より多くマッピングされている、文字数が少ない順
+    hogehoge = many_mapping_sort(mapping, all_documents)
 
 
     """
     結果出力
     """
-    output_csv(sorted(not_mapping_ids), sorted_many_mapping, all_documents)
+    output_csv(sorted(not_mapping_ids), hogehoge, all_documents)
+
+
+def many_mapping_sort(mapping, all_documents):
+    tmp = [{'id': int(x), 'map': mapping[x]} for x in mapping]
+
+    tmp = sorted(tmp, key=lambda x: len(x['map']), reverse=True)
+    tmp = sorted(tmp, key=lambda x: len(all_documents[x['id']]['origin']))
+    tmp = sorted(tmp, key=lambda x: correspondence_student_number.get_name(all_documents[x['id']]['student']))
+
+    return tmp
 
 
 def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
@@ -146,13 +156,13 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
     writer = csv.writer(many_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'count', 'KPT', 'id', 'mappings'])
 
-    for many_mapping in sorted_many_mapping:
-        doc = all_documents[many_mapping[0]]
+    for mapping_dict in sorted_many_mapping:
+        doc = all_documents[mapping_dict['id']]
         student_name = correspondence_student_number.get_name(doc['student'])
-        mappings = [str(x) for x in many_mapping[1]]
+        mappings = [str(x) for x in mapping_dict['map']]
         mappings = ' '.join(mappings)
 
-        writer.writerow([student_name, doc['day'], doc['origin'], len(many_mapping[1]), doc['KPT'], doc['id'], mappings])
+        writer.writerow([student_name, doc['day'], doc['origin'], len(mapping_dict['map']), doc['KPT'], doc['id'], mappings])
 
     many_file.close()
     rare_file.close()
