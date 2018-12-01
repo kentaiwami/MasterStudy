@@ -160,10 +160,16 @@ def main():
 
 
 def many_mapping_sort(mapping, all_documents):
-    tmp = [{'id': int(x), 'map': mapping[x]} for x in mapping]
+    sum_mapping_count = 0
+
+    for doc_id in mapping:
+        sum_mapping_count += len(mapping[doc_id])
+
+    ave_mapping_count = sum_mapping_count / len(all_documents)
+
+    tmp = [{'id': int(x), 'map': mapping[x]} for x in mapping if len(mapping[x]) >= ave_mapping_count]
 
     tmp = sorted(tmp, key=lambda x: len(x['map']), reverse=True)
-    tmp = sorted(tmp, key=lambda x: len(all_documents[x['id']]['origin']))
     tmp = sorted(tmp, key=lambda x: correspondence_student_number.get_name(all_documents[x['id']]['student']))
 
     return tmp
