@@ -2,7 +2,6 @@ from gensim import corpora
 from gensim import models
 import math
 import json
-import datetime
 import MeCab
 import csv
 import correspondence_student_number

@@ -16,6 +16,7 @@ def wrap_subcalc(args):
 
 def subcalc(p, all_documents):
     sub_mapping = {}
+    rare_mapping = {}
     s = int(len(all_documents) * p / proc)
     e = int(len(all_documents) * (p + 1) / proc)
     sliced = all_documents[s:e]
@@ -40,33 +41,35 @@ def subcalc(p, all_documents):
                 'id': other_document['id']
             })
 
+        sub_mapping[document['id']] = distances
 
         """
         マッピング
         """
+        tmp_distances = distances.copy()
 
         # 距離が0（同じ文章）を先にピックアップ
-        all_zero_distances = [x for x in distances if x['dis'] == 0.0]
+        all_zero_distances = [x for x in tmp_distances if x['dis'] == 0.0]
 
         for zero_distance in all_zero_distances:
-            distances.remove(zero_distance)
+            tmp_distances.remove(zero_distance)
 
-        ave_zero_distances = [x for x in distances if x['dis'] == 0.0]
+        ave_zero_distances = [x for x in tmp_distances if x['dis'] == 0.0]
 
         for zero_distance in ave_zero_distances:
-            distances.remove(zero_distance)
+            tmp_distances.remove(zero_distance)
 
         # 上位3件をピックアップ
-        higher_distances = sorted(distances, key=lambda x: x['dis'])[:3]
+        higher_distances = sorted(tmp_distances, key=lambda x: x['dis'])[:3]
 
         # 平均値の最小値と全ての最小値から重複除去して記録
-        sub_mapping[document['id']] = list(set(
+        rare_mapping[document['id']] = list(set(
             [x['id'] for x in higher_distances] +
             [x['id'] for x in all_zero_distances] +
             [x['id'] for x in ave_zero_distances]
         ))
 
-    return sub_mapping
+    return sub_mapping, rare_mapping
 
 
 def main():
@@ -97,9 +100,40 @@ def main():
     pool.close()
 
     # 結果をマージ
-    mapping = {}
+    distance_results = {}
+    rare_mapping_results = {}
     for callback in callbacks:
-        mapping = {**mapping, **callback}
+        distance_results = {**distance_results, **callback[0]}
+        rare_mapping_results = {**rare_mapping_results, **callback[1]}
+
+    # {'10': [{'dis': 12.112, 'id': 1}]...}
+    # 全距離から平均値を算出
+    tmp_dis_sum = 0.0
+
+    for doc_id in distance_results:
+        distance_obj_list = distance_results[doc_id]
+        tmp_distance_list = [x['dis'] for x in distance_obj_list]
+        tmp_dis_sum += sum(tmp_distance_list)
+
+    dis_ave = tmp_dis_sum / (pow(len(all_documents), 2))
+
+    print('====================')
+    print('dis_ave: {}'.format(dis_ave))
+    print('====================')
+
+
+    """
+    マッピング作業
+    """
+    mapping = {}
+    for doc_id in distance_results:
+        tmp_mapping = []
+        for distance_obj in distance_results[doc_id]:
+            if distance_obj['dis'] <= dis_ave:
+                tmp_mapping.append(distance_obj['id'])
+
+        mapping[doc_id] = tmp_mapping
+
 
 
     """
@@ -107,8 +141,8 @@ def main():
     たくさんマッピングされているもの（みんなが書いている内容）を抽出する
     """
     mapping_ids = []
-    for key in mapping:
-        mapping_ids += mapping[key]
+    for key in rare_mapping_results:
+        mapping_ids += rare_mapping_results[key]
 
     mapping_ids = list(set(mapping_ids))
 
@@ -116,20 +150,26 @@ def main():
     not_mapping_ids = [x for x in range(document_id) if x not in mapping_ids]
 
     # 学生順、より多くマッピングされている、文字数が少ない順
-    hogehoge = many_mapping_sort(mapping, all_documents)
+    sorted_many_mapping = many_mapping_sort(mapping, all_documents)
 
 
     """
     結果出力
     """
-    output_csv(sorted(not_mapping_ids), hogehoge, all_documents)
+    output_csv(sorted(not_mapping_ids), sorted_many_mapping, all_documents)
 
 
 def many_mapping_sort(mapping, all_documents):
-    tmp = [{'id': int(x), 'map': mapping[x]} for x in mapping]
+    sum_mapping_count = 0
+
+    for doc_id in mapping:
+        sum_mapping_count += len(mapping[doc_id])
+
+    ave_mapping_count = sum_mapping_count / len(all_documents)
+
+    tmp = [{'id': int(x), 'map': mapping[x]} for x in mapping if len(mapping[x]) >= ave_mapping_count]
 
     tmp = sorted(tmp, key=lambda x: len(x['map']), reverse=True)
-    tmp = sorted(tmp, key=lambda x: len(all_documents[x['id']]['origin']))
     tmp = sorted(tmp, key=lambda x: correspondence_student_number.get_name(all_documents[x['id']]['student']))
 
     return tmp
