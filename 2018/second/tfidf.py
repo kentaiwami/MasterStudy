@@ -70,11 +70,16 @@ def output_csv(documents):
     mode = 'sum'
 
     if is_top3:
-        name = '_top3'
+        is_top3_name = '_top3'
     else:
-        name = ''
+        is_top3_name = ''
 
-    file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf/{}{}.csv'.format(mode, name))), 'w')
+    if is_meishi_only:
+        is_meishi_name = '_meishi'
+    else:
+        is_meishi_name = ''
+
+    file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf/{}{}{}.csv'.format(mode, is_top3_name, is_meishi_name))), 'w')
     writer = csv.writer(file, lineterminator='\n')
     documents.sort(key=lambda x: x[mode], reverse=True)
     writer.writerow(['student', 'day', 'origin', 'id', 'tfidf', 'KPT'])
@@ -89,9 +94,32 @@ def new_idf(docfreq, totaldocs, log_base=2.0, add=1.0):
     return add + math.log(1.0 * totaldocs / docfreq, log_base)
 
 
+
+def get_maishi_wakachi(text):
+    mecab.parseToNode('')
+    node = mecab.parseToNode(text)
+
+    keywords = []
+    while node:
+        if node.feature.split(',')[0] == '名詞' and node.feature.split(',')[6] != '*':
+            keywords.append(node.feature.split(',')[6])
+
+        node = node.next
+
+    return keywords
+
+
 def get_wakachi(sentence):
-    sentence_list = mecab.parse(sentence).replace(' \n', '').split()
-    return ' '.join(sentence_list)
+    if is_meishi_only:
+        sentence_wakachi = get_maishi_wakachi(sentence)
+
+        if len(sentence_wakachi) == 0:
+            sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
+
+    else:
+        sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
+
+    return ' '.join(sentence_wakachi)
 
 
 def get_documents():
@@ -141,14 +169,15 @@ def check_argv():
 
     try:
         tmp_is_top3 = strtobool(sys.argv[1])
-    except ValueError:
+        tmp_is_meishi_only = strtobool(sys.argv[2])
+    except (ValueError, IndexError):
         raise ValueError
 
-    return tmp_is_top3
+    return tmp_is_top3, tmp_is_meishi_only
 
 
 if __name__ == '__main__':
-    is_top3 = check_argv()
+    is_top3, is_meishi_only = check_argv()
     document_id = 0
     mecab = MeCab.Tagger("-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd -Owakati")
     base_path = os.path.dirname(os.path.abspath(__file__))
