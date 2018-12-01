@@ -137,12 +137,18 @@ def many_mapping_sort(mapping, all_documents):
 
 def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
     if is_include_self:
-        name = '_include_self'
+        incluse_self_name = '_include_self'
     else:
-        name = ''
+        incluse_self_name = ''
 
-    rare_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare{}.csv'.format(name))), 'w')
-    many_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/many{}.csv'.format(name))), 'w')
+    if is_meishi_only:
+        meishi_name = '_meishi'
+    else:
+        meishi_name = ''
+
+
+    rare_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare{}{}.csv'.format(incluse_self_name, meishi_name))), 'w')
+    many_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/many{}{}.csv'.format(incluse_self_name, meishi_name))), 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT'])
@@ -169,10 +175,36 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
 
 
 def calc_distance(target_sentence, sentence):
-    sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
-    target_sentence_wakachi = mecab.parse(target_sentence).replace(' \n', '').split()
+    if is_meishi_only:
+        sentence_wakachi = get_maishi_wakachi(sentence)
+        target_sentence_wakachi = get_maishi_wakachi(target_sentence)
+
+        if len(sentence_wakachi) == 0:
+            sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
+
+        if len(target_sentence_wakachi) == 0:
+            target_sentence_wakachi = mecab.parse(target_sentence).replace(' \n', '').split()
+
+    else:
+        sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
+        target_sentence_wakachi = mecab.parse(target_sentence).replace(' \n', '').split()
 
     return word2vec_model.wmdistance(sentence_wakachi, target_sentence_wakachi)
+
+
+
+def get_maishi_wakachi(text):
+    mecab.parseToNode('')
+    node = mecab.parseToNode(text)
+
+    keywords = []
+    while node:
+        if node.feature.split(',')[0] == '名詞' and node.feature.split(',')[6] != '*':
+            keywords.append(node.feature.split(',')[6])
+
+        node = node.next
+
+    return keywords
 
 
 def add_document(kpt_list, student_number, day, kpt):
@@ -205,14 +237,15 @@ def check_argv():
 
     try:
         tmp_is_include_self = strtobool(sys.argv[1])
-    except ValueError:
+        tmp_is_meishi_only = strtobool(sys.argv[2])
+    except (ValueError, IndexError):
         raise ValueError
 
-    return tmp_is_include_self
+    return tmp_is_include_self, tmp_is_meishi_only
 
 
 if __name__ == '__main__':
-    is_include_self = check_argv()
+    is_include_self, is_meishi_only = check_argv()
     proc = 16
     process = [chr(i) for i in range(65, 65 + 26)]
     document_id = 0
