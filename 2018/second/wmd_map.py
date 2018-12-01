@@ -141,14 +141,14 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
     else:
         incluse_self_name = ''
 
-    if is_meishi_only:
-        meishi_name = '_meishi'
+    if is_limit_hinshi:
+        hinshi_name = '_hinshi'
     else:
-        meishi_name = ''
+        hinshi_name = ''
 
 
-    rare_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare{}{}.csv'.format(incluse_self_name, meishi_name))), 'w')
-    many_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/many{}{}.csv'.format(incluse_self_name, meishi_name))), 'w')
+    rare_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare{}{}.csv'.format(incluse_self_name, hinshi_name))), 'w')
+    many_file = open(os.path.normpath(os.path.join(base_path, 'output/wmd_map/many{}{}.csv'.format(incluse_self_name, hinshi_name))), 'w')
 
     writer = csv.writer(rare_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'id', 'KPT'])
@@ -175,9 +175,9 @@ def output_csv(not_mapping_ids, sorted_many_mapping, all_documents):
 
 
 def calc_distance(target_sentence, sentence):
-    if is_meishi_only:
-        sentence_wakachi = get_maishi_wakachi(sentence)
-        target_sentence_wakachi = get_maishi_wakachi(target_sentence)
+    if is_limit_hinshi:
+        sentence_wakachi = get_hinshi_wakachi(sentence)
+        target_sentence_wakachi = get_hinshi_wakachi(target_sentence)
 
         if len(sentence_wakachi) == 0:
             sentence_wakachi = mecab.parse(sentence).replace(' \n', '').split()
@@ -193,13 +193,14 @@ def calc_distance(target_sentence, sentence):
 
 
 
-def get_maishi_wakachi(text):
+def get_hinshi_wakachi(text):
+    ok_hinshi = ['名詞', '形容詞', '動詞']
     mecab.parseToNode('')
     node = mecab.parseToNode(text)
 
     keywords = []
     while node:
-        if node.feature.split(',')[0] == '名詞' and node.feature.split(',')[6] != '*':
+        if node.feature.split(',')[0] in ok_hinshi and node.feature.split(',')[6] != '*':
             keywords.append(node.feature.split(',')[6])
 
         node = node.next
@@ -237,15 +238,15 @@ def check_argv():
 
     try:
         tmp_is_include_self = strtobool(sys.argv[1])
-        tmp_is_meishi_only = strtobool(sys.argv[2])
+        tmp_is_limit_hinshi = strtobool(sys.argv[2])
     except (ValueError, IndexError):
         raise ValueError
 
-    return tmp_is_include_self, tmp_is_meishi_only
+    return tmp_is_include_self, tmp_is_limit_hinshi
 
 
 if __name__ == '__main__':
-    is_include_self, is_meishi_only = check_argv()
+    is_include_self, is_limit_hinshi = check_argv()
     proc = 16
     process = [chr(i) for i in range(65, 65 + 26)]
     document_id = 0

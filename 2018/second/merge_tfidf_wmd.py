@@ -141,12 +141,12 @@ def coordination_wmd(remove_document_ids):
 
 
 def output_csv(sorted_wmd_list):
-    if is_meishi:
-        meishi_name = '_meishi'
+    if is_hinshi:
+        hinshi_name = '_hinshi'
     else:
-        meishi_name = ''
+        hinshi_name = ''
 
-    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare{}.csv'.format(meishi_name))), 'w')
+    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare{}.csv'.format(hinshi_name))), 'w')
     writer = csv.writer(output_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'KPT', 'id', 'sort_id'])
 
@@ -162,16 +162,16 @@ def check_argv():
         raise ValueError
 
     try:
-        tmp_is_meishi = strtobool(sys.argv[1])
+        tmp_is_hinshi = strtobool(sys.argv[1])
     except ValueError:
         raise ValueError
 
-    return tmp_is_meishi
+    return tmp_is_hinshi
 
 
 def get_file_path():
-    if is_meishi:
-        return {'tfidf': 'output/tfidf/sum_top3_meishi.csv', 'wmd': 'output/wmd_map/rare_meishi.csv'}
+    if is_hinshi:
+        return {'tfidf': 'output/tfidf/sum_top3_hinshi.csv', 'wmd': 'output/wmd_map/rare_hinshi.csv'}
     else:
         return {'tfidf': 'output/tfidf/sum_top3.csv', 'wmd': 'output/wmd_map/rare.csv'}
 
@@ -184,7 +184,7 @@ def main():
 
 
 if __name__ == '__main__':
-    is_meishi = check_argv()
+    is_hinshi = check_argv()
     base_path = os.path.dirname(os.path.abspath(__file__))
 
 
