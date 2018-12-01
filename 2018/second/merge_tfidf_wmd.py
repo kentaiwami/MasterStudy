@@ -1,6 +1,8 @@
 import os
 import csv
 import correspondence_student_number
+import sys
+from distutils.util import strtobool
 
 
 def get_tfidf_ave():
@@ -139,7 +141,12 @@ def coordination_wmd(remove_document_ids):
 
 
 def output_csv(sorted_wmd_list):
-    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare.csv')), 'w')
+    if is_meishi:
+        meishi_name = '_meishi'
+    else:
+        meishi_name = ''
+
+    output_file = open(os.path.normpath(os.path.join(base_path, 'output/tfidf_wmd_merge/merged_rare{}.csv'.format(meishi_name))), 'w')
     writer = csv.writer(output_file, lineterminator='\n')
     writer.writerow(['student', 'date', 'origin', 'KPT', 'id', 'sort_id'])
 
@@ -150,6 +157,25 @@ def output_csv(sorted_wmd_list):
     output_file.close()
 
 
+def check_argv():
+    if len(sys.argv) == 1:
+        raise ValueError
+
+    try:
+        tmp_is_meishi = strtobool(sys.argv[1])
+    except ValueError:
+        raise ValueError
+
+    return tmp_is_meishi
+
+
+def get_file_path():
+    if is_meishi:
+        return {'tfidf': 'output/tfidf/sum_top3_meishi.csv', 'wmd': 'output/wmd_map/rare_meishi.csv'}
+    else:
+        return {'tfidf': 'output/tfidf/sum_top3.csv', 'wmd': 'output/wmd_map/rare.csv'}
+
+
 def main():
     tfidf_ave = get_tfidf_ave()
     remove_document_ids = get_document_id_less_than_ave(tfidf_ave)
@@ -158,7 +184,10 @@ def main():
 
 
 if __name__ == '__main__':
+    is_meishi = check_argv()
     base_path = os.path.dirname(os.path.abspath(__file__))
-    tfidf_file_path = os.path.normpath(os.path.join(base_path, 'output/tfidf/sum_top3.csv'))
-    wmd_file_path = os.path.normpath(os.path.join(base_path, 'output/wmd_map/rare.csv'))
+
+
+    tfidf_file_path = os.path.normpath(os.path.join(base_path, get_file_path()['tfidf']))
+    wmd_file_path = os.path.normpath(os.path.join(base_path, get_file_path()['wmd']))
     main()
