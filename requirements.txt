@@ -1,6 +1,6 @@
 boto==2.49.0
-boto3==1.9.58
-botocore==1.12.58
+boto3==1.9.62
+botocore==1.12.62
 bz2file==0.98
 certifi==2018.11.29
 chardet==3.0.4
@@ -8,7 +8,7 @@ docutils==0.14
 gensim==3.6.0
 gspread==3.1.0
 httplib2==0.12.0
-idna==2.7
+idna==2.8
 jmespath==0.9.3
 mecab-python3==0.996.1
 numpy==1.15.4
@@ -17,11 +17,11 @@ pyasn1==0.4.4
 pyasn1-modules==0.2.2
 pyemd==0.5.1
 python-dateutil==2.7.5
-requests==2.20.1
+requests==2.21.0
 rsa==4.0
 s3transfer==0.1.13
 scikit-learn==0.20.1
 scipy==1.1.0
-six==1.11.0
+six==1.12.0
 smart-open==1.7.1
 urllib3==1.24.1
