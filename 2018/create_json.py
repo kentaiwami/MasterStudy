@@ -7,7 +7,8 @@ import time
 
 def get_worksheet_list(doc_id):
     scope = ['https://spreadsheets.google.com/feeds']
-    path = os.path.expanduser("../key.json")
+    # path = os.path.expanduser("../key.json")
+    path = os.path.normpath(os.path.join(base_path, '../key.json'))
 
     # print(path)
     # exit(1)
