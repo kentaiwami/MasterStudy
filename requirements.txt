@@ -1,6 +1,6 @@
 boto==2.49.0
-boto3==1.9.71
-botocore==1.12.71
+boto3==1.9.74
+botocore==1.12.74
 bz2file==0.98
 certifi==2018.11.29
 chardet==3.0.4
@@ -13,8 +13,8 @@ jmespath==0.9.3
 mecab-python3==0.996.1
 numpy==1.15.4
 oauth2client==4.1.3
-pyasn1==0.4.4
-pyasn1-modules==0.2.2
+pyasn1==0.4.5
+pyasn1-modules==0.2.3
 pyemd==0.5.1
 python-dateutil==2.7.5
 requests==2.21.0
