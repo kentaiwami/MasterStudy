@@ -1,6 +1,6 @@
 boto==2.49.0
-boto3==1.9.86
-botocore==1.12.86
+boto3==1.9.87
+botocore==1.12.87
 bz2file==0.98
 certifi==2018.11.29
 chardet==3.0.4
