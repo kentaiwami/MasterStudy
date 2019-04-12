@@ -111,3 +111,4 @@ model
 correspondence_student_number.py
 2018/*.json
 key.json
+.vscode
